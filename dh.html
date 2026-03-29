@@ -6,199 +6,175 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-    <title>Diffie-Hellman Step-by-Step | Kido Pro</title>
+    <title>Diffie-Hellman Hybrid | Kido Pro</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&display=swap');
         .font-mono { font-family: 'Fira Code', monospace; }
-        .katex { font-size: 1.1em; }
+        input::placeholder { font-style: italic; opacity: 0.5; font-size: 0.8rem; }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-200 p-4 md:p-8 pb-20 font-sans antialiased">
     <div class="max-w-5xl mx-auto space-y-6">
-        <div class="flex flex-col md:flex-row justify-between items-center border-b border-slate-800 pb-6 gap-4">
-            <div class="text-center md:text-left">
-                <h1 class="text-2xl md:text-3xl font-black text-yellow-500 italic uppercase tracking-tighter">Diffie-Hellman Key Exchange</h1>
-                <p class="text-[10px] text-slate-500 font-bold uppercase tracking-[0.3em]">Mô phỏng trao đổi khóa chi tiết - Kido Edition</p>
+        <div class="flex justify-between items-center border-b border-slate-800 pb-6">
+            <div>
+                <h1 class="text-2xl font-black text-yellow-500 italic uppercase">Diffie-Hellman Hybrid</h1>
+                <p class="text-[9px] text-slate-500 font-bold uppercase tracking-[0.3em]">Nhập tự do - Tính linh hoạt - Kido Edition</p>
             </div>
-            <button onclick="quickTest()" class="bg-yellow-600/10 hover:bg-yellow-600/20 text-yellow-500 border border-yellow-600/50 px-4 py-2 rounded-xl text-xs font-bold transition-all">
-                Dùng số mẫu (q=353, a=3)
-            </button>
+            <a href="index.html" class="bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-xl text-xs font-bold border border-slate-700 transition-all">← BACK</a>
         </div>
         
-        <div class="bg-slate-900 p-6 rounded-3xl border border-slate-800 shadow-2xl grid grid-cols-1 md:grid-cols-2 gap-6 relative overflow-hidden">
-            <div class="absolute top-0 right-0 p-2 opacity-10 uppercase font-black text-4xl pointer-events-none">Public</div>
+        <div class="bg-slate-900 p-6 rounded-3xl border border-slate-800 shadow-2xl grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="space-y-2">
-                <label class="text-[10px] font-black text-yellow-600 uppercase ml-1 italic">Số nguyên tố (q)</label>
-                <input id="q" placeholder="VD: 353" class="w-full bg-black/40 p-4 rounded-2xl border border-slate-700 font-mono text-yellow-500 focus:border-yellow-500 outline-none transition-all text-lg">
+                <label class="text-[10px] font-black text-yellow-600 uppercase italic">Số nguyên tố (q)</label>
+                <input id="q" oninput="updateAll()" placeholder="Nhập q (VD: 353)" class="w-full bg-black/40 p-4 rounded-2xl border border-slate-700 font-mono text-yellow-500 outline-none focus:border-yellow-500 transition-all">
             </div>
             <div class="space-y-2">
-                <label class="text-[10px] font-black text-yellow-600 uppercase ml-1 italic">Căn nguyên thủy (α)</label>
-                <input id="a" placeholder="VD: 3" class="w-full bg-black/40 p-4 rounded-2xl border border-slate-700 font-mono text-yellow-500 focus:border-yellow-500 outline-none transition-all text-lg">
+                <label class="text-[10px] font-black text-yellow-600 uppercase italic">Căn nguyên thủy (α)</label>
+                <input id="a" oninput="updateAll()" placeholder="Nhập α (VD: 3)" class="w-full bg-black/40 p-4 rounded-2xl border border-slate-700 font-mono text-yellow-500 outline-none focus:border-yellow-500 transition-all">
             </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <section class="bg-slate-900 p-6 rounded-3xl border-t-4 border-blue-600 shadow-xl space-y-5 relative">
-                <div class="flex justify-between items-center">
-                    <h2 class="text-sm font-black text-blue-400 uppercase tracking-widest flex items-center gap-2">
-                        <span class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span> Phía An (Alice)
-                    </h2>
-                </div>
+            <section class="bg-slate-900 p-6 rounded-3xl border-t-4 border-blue-600 shadow-xl space-y-4">
+                <h2 class="text-blue-400 font-black uppercase text-xs tracking-widest italic">An (Alice)</h2>
                 
-                <div class="space-y-4">
-                    <div class="bg-black/30 p-4 rounded-2xl border border-slate-800">
-                        <label class="text-[9px] font-bold text-slate-500 uppercase block mb-2">1. Nhập khóa riêng <span class="text-blue-400 italic">X<sub>A</sub> < q</span></label>
-                        <input id="xA" placeholder="VD: 97" class="w-full bg-slate-950 p-3 rounded-xl border border-slate-700 font-mono text-blue-400 outline-none focus:border-blue-500">
+                <div class="space-y-3">
+                    <div class="bg-black/30 p-3 rounded-xl border border-slate-800">
+                        <label class="text-[9px] font-bold text-slate-500 uppercase block mb-1">Khóa riêng XA</label>
+                        <input id="xA" oninput="autoCalcYa()" placeholder="Nhập XA..." class="w-full bg-transparent font-mono text-blue-400 outline-none">
                     </div>
 
-                    <button onclick="calcAn()" class="w-full bg-blue-600 hover:bg-blue-500 py-4 rounded-2xl font-black uppercase text-xs shadow-lg shadow-blue-900/20 transition-all active:scale-95">
-                        Tính Khóa Công Khai (Y<sub>A</sub>)
-                    </button>
-
-                    <div id="resYa" class="p-4 bg-blue-500/5 rounded-2xl border border-blue-500/20 font-mono text-sm text-blue-200 min-h-[60px] flex items-center justify-center text-center">
-                        <span class="text-slate-600 italic italic">Đợi tính Y<sub>A</sub>...</span>
+                    <div class="bg-blue-600/10 p-3 rounded-xl border border-blue-500/30">
+                        <label class="text-[9px] font-bold text-blue-400 uppercase block mb-1 text-center">Khóa công khai YA (Tính hoặc Nhập thẳng)</label>
+                        <input id="yA_val" oninput="syncToBob()" placeholder="Tự tính hoặc điền YA..." class="w-full bg-transparent font-mono text-blue-200 text-center text-lg outline-none font-bold">
                     </div>
 
-                    <div class="bg-black/30 p-4 rounded-2xl border border-slate-800">
-                        <label class="text-[9px] font-bold text-slate-500 uppercase block mb-2">2. Nhận khóa <span class="text-emerald-400">Y<sub>B</sub></span> từ Ba</label>
-                        <input id="yB_in" placeholder="Y_B sẽ tự điền khi Ba tính" class="w-full bg-slate-950 p-3 rounded-xl border border-slate-700 font-mono text-emerald-400 outline-none">
+                    <div class="bg-black/30 p-3 rounded-xl border border-slate-800">
+                        <label class="text-[9px] font-bold text-slate-500 uppercase block mb-1 italic text-emerald-400">Nhận YB từ Ba</label>
+                        <input id="yB_received" oninput="updateAll()" placeholder="Đợi Ba tính hoặc điền vào đây..." class="w-full bg-transparent font-mono text-emerald-400 outline-none">
                     </div>
-
-                    <button onclick="calcKAn()" class="w-full bg-indigo-600 hover:bg-indigo-500 py-4 rounded-2xl font-black uppercase text-xs shadow-lg transition-all active:scale-95">
-                        Tính Khóa Chung (K)
-                    </button>
                 </div>
             </section>
 
-            <section class="bg-slate-900 p-6 rounded-3xl border-t-4 border-emerald-600 shadow-xl space-y-5 relative">
-                <div class="flex justify-between items-center">
-                    <h2 class="text-sm font-black text-emerald-400 uppercase tracking-widest flex items-center gap-2">
-                        <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span> Phía Ba (Bob)
-                    </h2>
-                </div>
-
-                <div class="space-y-4">
-                    <div class="bg-black/30 p-4 rounded-2xl border border-slate-800">
-                        <label class="text-[9px] font-bold text-slate-500 uppercase block mb-2">1. Nhập khóa riêng <span class="text-emerald-400 italic">X<sub>B</sub> < q</span></label>
-                        <input id="xB" placeholder="VD: 233" class="w-full bg-slate-950 p-3 rounded-xl border border-slate-700 font-mono text-emerald-400 outline-none focus:border-emerald-500">
+            <section class="bg-slate-900 p-6 rounded-3xl border-t-4 border-emerald-600 shadow-xl space-y-4">
+                <h2 class="text-emerald-400 font-black uppercase text-xs tracking-widest italic">Ba (Bob)</h2>
+                
+                <div class="space-y-3">
+                    <div class="bg-black/30 p-3 rounded-xl border border-slate-800">
+                        <label class="text-[9px] font-bold text-slate-500 uppercase block mb-1">Khóa riêng XB</label>
+                        <input id="xB" oninput="autoCalcYb()" placeholder="Nhập XB..." class="w-full bg-transparent font-mono text-emerald-400 outline-none">
                     </div>
 
-                    <button onclick="calcBa()" class="w-full bg-emerald-600 hover:bg-emerald-500 py-4 rounded-2xl font-black uppercase text-xs shadow-lg shadow-emerald-900/20 transition-all active:scale-95">
-                        Tính Khóa Công Khai (Y<sub>B</sub>)
-                    </button>
-
-                    <div id="resYb" class="p-4 bg-emerald-500/5 rounded-2xl border border-emerald-500/20 font-mono text-sm text-emerald-200 min-h-[60px] flex items-center justify-center text-center">
-                        <span class="text-slate-600 italic">Đợi tính Y<sub>B</sub>...</span>
+                    <div class="bg-emerald-600/10 p-3 rounded-xl border border-emerald-500/30">
+                        <label class="text-[9px] font-bold text-emerald-400 uppercase block mb-1 text-center">Khóa công khai YB (Tính hoặc Nhập thẳng)</label>
+                        <input id="yB_val" oninput="syncToAlice()" placeholder="Tự tính hoặc điền YB..." class="w-full bg-transparent font-mono text-emerald-200 text-center text-lg outline-none font-bold">
                     </div>
 
-                    <div class="bg-black/30 p-4 rounded-2xl border border-slate-800">
-                        <label class="text-[9px] font-bold text-slate-500 uppercase block mb-2">2. Nhận khóa <span class="text-blue-400">Y<sub>A</sub></span> từ An</label>
-                        <input id="yA_in" placeholder="Y_A sẽ tự điền khi An tính" class="w-full bg-slate-950 p-3 rounded-xl border border-slate-700 font-mono text-blue-400 outline-none">
+                    <div class="bg-black/30 p-3 rounded-xl border border-slate-800">
+                        <label class="text-[9px] font-bold text-slate-500 uppercase block mb-1 italic text-blue-400">Nhận YA từ An</label>
+                        <input id="yA_received" oninput="updateAll()" placeholder="Đợi An tính hoặc điền vào đây..." class="w-full bg-transparent font-mono text-blue-400 outline-none">
                     </div>
-
-                    <button onclick="calcKBa()" class="w-full bg-teal-600 hover:bg-teal-500 py-4 rounded-2xl font-black uppercase text-xs shadow-lg transition-all active:scale-95">
-                        Tính Khóa Chung (K)
-                    </button>
                 </div>
             </section>
         </div>
 
         <section class="bg-slate-900 p-6 rounded-3xl border border-slate-800 shadow-2xl">
             <h2 class="text-[10px] font-black text-yellow-500 uppercase mb-4 tracking-[0.2em] flex items-center gap-2">
-                <span class="w-1.5 h-1.5 bg-yellow-500 rounded-full"></span> Lời giải chi tiết để trình bày bài thi
+                <span class="w-1.5 h-1.5 bg-yellow-500 rounded-full animate-ping"></span> LỜI GIẢI CHI TIẾT (RENDER REAL-TIME)
             </h2>
-            <div id="solDH" class="bg-black/40 p-6 rounded-2xl font-mono text-sm leading-loose text-slate-300 border border-slate-800/50">
-                <div class="text-slate-600 italic">Chưa có bước tính toán nào được thực hiện...</div>
+            <div id="solDH" class="bg-black/40 p-6 rounded-2xl font-mono text-sm leading-loose text-slate-300 border border-slate-800/50 min-h-[200px]">
+                Điền các số để xem lời giải...
             </div>
         </section>
     </div>
 
     <script>
-        const big = (n) => BigInt(n);
+        const big = (n) => (n && !isNaN(n)) ? BigInt(n) : null;
         
         function mPow(b, e, m) { 
-            let r = 1n; b = big(b) % big(m); e = big(e); 
+            if (!b || !e || !m) return null;
+            let r = 1n; b = b % m; e = e; 
             while(e > 0n){ 
-                if(e % 2n === 1n) r = (r * b) % big(m); 
-                b = (b * b) % big(m); e /= 2n; 
+                if(e % 2n === 1n) r = (r * b) % m; 
+                b = (b * b) % m; e /= 2n; 
             } 
             return r; 
         }
 
-        function quickTest() {
-            document.getElementById('q').value = "353";
-            document.getElementById('a').value = "3";
-            document.getElementById('xA').value = "97";
-            document.getElementById('xB').value = "233";
-        }
-
-        function calcAn() {
+        // Alice tự tính YA khi nhập XA
+        function autoCalcYa() {
             const q = big(document.getElementById('q').value);
             const a = big(document.getElementById('a').value);
             const xA = big(document.getElementById('xA').value);
-            if (!q || !a || !xA) return alert("Việt nhập đủ q, a và xA đã nhé!");
+            if (q && a && xA) {
+                const yA = mPow(a, xA, q);
+                document.getElementById('yA_val').value = yA.toString();
+                syncToBob();
+            }
+            updateAll();
+        }
+
+        // Bob tự tính YB khi nhập XB
+        function autoCalcYb() {
+            const q = big(document.getElementById('q').value);
+            const a = big(document.getElementById('a').value);
+            const xB = big(document.getElementById('xB').value);
+            if (q && a && xB) {
+                const yB = mPow(a, xB, q);
+                document.getElementById('yB_val').value = yB.toString();
+                syncToAlice();
+            }
+            updateAll();
+        }
+
+        function syncToBob() { document.getElementById('yA_received').value = document.getElementById('yA_val').value; updateAll(); }
+        function syncToAlice() { document.getElementById('yB_received').value = document.getElementById('yB_val').value; updateAll(); }
+
+        function updateAll() {
+            const q = document.getElementById('q').value;
+            const a = document.getElementById('a').value;
+            const xA = document.getElementById('xA').value;
+            const xB = document.getElementById('xB').value;
+            const yA = document.getElementById('yA_val').value;
+            const yB = document.getElementById('yB_val').value;
+
+            if (!q || (!yA && !yB)) {
+                document.getElementById('solDH').innerHTML = `<span class="text-slate-600 italic">Nhập ít nhất số q và một khóa YA hoặc YB để bắt đầu...</span>`;
+                return;
+            }
+
+            let kAlice = mPow(big(yB), big(xA), big(q));
+            let kBob = mPow(big(yA), big(xB), big(q));
+
+            let html = `<div class="space-y-6">`;
             
-            const yA = mPow(a, xA, q);
-            document.getElementById('resYa').innerHTML = `Y_A = ${a}^{${xA}} \\pmod{${q}} = ${yA}`;
-            katex.render(`Y_A = ${a}^{${xA}} \\pmod{${q}} = ${yA}`, document.getElementById('resYa'));
-            document.getElementById('yA_in').value = yA;
-        }
+            // Bước 1: Khóa công khai
+            html += `<div><p class="text-yellow-500 font-bold underline mb-2 italic">1. Trao đổi khóa công khai:</p>`;
+            if (xA) html += `<p>• Alice tính $Y_A = ${a}^{${xA}} \\pmod{${q}} = ${yA}$</p>`;
+            else if (yA) html += `<p>• Alice sử dụng $Y_A$ cho sẵn: $${yA}$</p>`;
+            
+            if (xB) html += `<p>• Bob tính $Y_B = ${a}^{${xB}} \\pmod{${q}} = ${yB}$</p>`;
+            else if (yB) html += `<p>• Bob sử dụng $Y_B$ cho sẵn: $${yB}$</p>`;
+            html += `</div>`;
 
-        function calcBa() {
-            const q = big(document.getElementById('q').value);
-            const a = big(document.getElementById('a').value);
-            const xB = big(document.getElementById('xB').value);
-            if (!q || !a || !xB) return alert("Đừng quên nhập khóa xB của Ba!");
+            // Bước 2: Khóa chung
+            html += `<div><p class="text-blue-400 font-bold underline mb-2 italic">2. Tính khóa chung K:</p>`;
+            if (xA && yB) html += `<p>• Alice: $K = (Y_B)^{X_A} \\pmod q = ${yB}^{${xA}} \\pmod{${q}} = \\mathbf{${kAlice}}$</p>`;
+            if (xB && yA) html += `<p>• Bob: $K = (Y_A)^{X_B} \\pmod q = ${yA}^{${xB}} \\pmod{${q}} = \\mathbf{${kBob}}$</p>`;
+            
+            if (kAlice && kBob && kAlice === kBob) {
+                html += `<div class="mt-4 p-3 bg-green-900/20 border border-green-800/40 rounded-xl text-green-400 text-center font-bold italic">
+                         => Kết quả: Trao đổi khóa thành công! Khóa chung K = ${kAlice}</div>`;
+            }
+            html += `</div></div>`;
 
-            const yB = mPow(a, xB, q);
-            document.getElementById('resYb').innerHTML = `Y_B = ${a}^{${xB}} \\pmod{${q}} = ${yB}`;
-            katex.render(`Y_B = ${a}^{${xB}} \\pmod{${q}} = ${yB}`, document.getElementById('resYb'));
-            document.getElementById('yB_in').value = yB;
-        }
-
-        function calcKAn() {
-            const q = big(document.getElementById('q').value);
-            const xA = big(document.getElementById('xA').value);
-            const yB = big(document.getElementById('yB_in').value);
-            const yA = document.getElementById('yA_in').value;
-            if (!yB) return alert("Chưa nhận được Y_B từ Ba!");
-
-            const K = mPow(yB, xA, q);
-            const sol = `
-                <div class="space-y-4">
-                    <p class="text-blue-400 font-bold border-b border-blue-900/30 pb-2 italic underline">Bước 1: Tính các giá trị công khai</p>
-                    <p>1. An tính khóa công khai: <br> $Y_A = \\alpha^{X_A} \\pmod q = ${document.getElementById('a').value}^{${xA}} \\pmod{${q}} = \\mathbf{${yA}}$</p>
-                    <p>2. Ba tính khóa công khai: <br> $Y_B = \\alpha^{X_B} \\pmod q = ${document.getElementById('a').value}^{${document.getElementById('xB').value}} \\pmod{${q}} = \\mathbf{${yB}}$</p>
-                    <p class="text-indigo-400 font-bold border-b border-indigo-900/30 pb-2 italic underline">Bước 2: Tính khóa chung (K)</p>
-                    <p>3. An nhận $Y_B$ từ Ba và tính khóa chung: <br> $K = (Y_B)^{X_A} \\pmod q = ${yB}^{${xA}} \\pmod{${q}} = \\mathbf{${K}}$</p>
-                </div>
-            `;
-            document.getElementById('solDH').innerHTML = sol;
-            renderMath();
-        }
-
-        function calcKBa() {
-            const q = big(document.getElementById('q').value);
-            const xB = big(document.getElementById('xB').value);
-            const yA = big(document.getElementById('yA_in').value);
-            if (!yA) return alert("Chưa nhận được Y_A từ An!");
-
-            const K = mPow(yA, xB, q);
-            document.getElementById('solDH').innerHTML += `
-                <p class="mt-4">4. Ba nhận $Y_A$ từ An và tính khóa chung: <br> $K = (Y_A)^{X_B} \\pmod q = ${yA}^{${xB}} \\pmod{${q}} = \\mathbf{${K}}$</p>
-                <div class="mt-4 p-3 bg-green-900/20 border border-green-800/30 rounded-xl text-green-400 text-center font-bold">
-                    => Kết quả: Cả hai đều tính ra K = ${K} (Trao đổi thành công!)
-                </div>
-            `;
-            renderMath();
-        }
-
-        function renderMath() {
-            const el = document.getElementById('solDH');
-            // Tìm tất cả các đoạn nằm trong $...$ để render KaTeX
-            el.innerHTML = el.innerHTML.replace(/\$(.*?)\$/g, (match, formula) => {
-                return katex.renderToString(formula);
-            });
+            document.getElementById('solDH').innerHTML = html;
+            
+            // Render Math
+            if (window.katex) {
+                const el = document.getElementById('solDH');
+                el.innerHTML = el.innerHTML.replace(/\$(.*?)\$/g, (m, f) => katex.renderToString(f));
+            }
         }
     </script>
 </body>
