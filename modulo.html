@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Modulo Master Tool - Kido Edition</title>
+</head>
+<body class="bg-slate-900 text-slate-200 p-4 pb-20 font-mono">
+    <div class="max-w-4xl mx-auto space-y-6">
+        <a href="index.html" class="text-blue-400 hover:underline flex items-center gap-2 mb-4">
+            <span>←</span> Quay lại Menu chính
+        </a>
+
+        <h1 class="text-3xl font-bold text-center text-blue-400 mb-8 border-b border-slate-700 pb-4 uppercase italic">
+            Hệ Thống Giải Toán Modulo
+        </h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 shadow-lg hover:border-blue-500 transition-colors">
+                <h2 class="text-blue-300 font-bold mb-3 flex justify-between">
+                    <span>Lũy thừa nhanh</span>
+                    <span class="text-[10px] bg-blue-900 px-2 py-1 rounded text-blue-200">a^m mod n</span>
+                </h2>
+                <div class="space-y-2">
+                    <input id="pow_a" placeholder="Cơ số a" class="w-full bg-slate-900 p-2 rounded border border-slate-600 focus:border-blue-500 outline-none">
+                    <input id="pow_m" placeholder="Số mũ m" class="w-full bg-slate-900 p-2 rounded border border-slate-600 focus:border-blue-500 outline-none">
+                    <input id="pow_n" placeholder="Modulo n" class="w-full bg-slate-900 p-2 rounded border border-slate-600 focus:border-blue-500 outline-none">
+                    <button onclick="calcPower()" class="w-full bg-blue-600 hover:bg-blue-500 p-2 rounded font-bold transition-all active:scale-95">Tính b</button>
+                    <div id="resPower" class="mt-2 text-yellow-400 font-bold text-center text-xl min-h-[1.5rem]"></div>
+                </div>
+            </div>
+
+            <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 shadow-lg hover:border-emerald-500 transition-colors">
+                <h2 class="text-emerald-300 font-bold mb-3 flex justify-between">
+                    <span>Nghịch đảo Modulo</span>
+                    <span class="text-[10px] bg-emerald-900 px-2 py-1 rounded text-emerald-200">a⁻¹ mod n</span>
+                </h2>
+                <div class="space-y-2">
+                    <input id="inv_a" placeholder="Số a" class="w-full bg-slate-900 p-2 rounded border border-slate-600 focus:border-emerald-500 outline-none">
+                    <input id="inv_n" placeholder="Modulo n" class="w-full bg-slate-900 p-2 rounded border border-slate-600 focus:border-emerald-500 outline-none">
+                    <button onclick="calcInverse()" class="w-full bg-emerald-600 hover:bg-emerald-500 p-2 rounded font-bold transition-all active:scale-95">Tính x</button>
+                    <div id="resInverse" class="mt-2 text-yellow-400 font-bold text-center text-xl min-h-[1.5rem]"></div>
+                </div>
+            </div>
+
+            <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 shadow-lg hover:border-purple-500 transition-colors">
+                <h2 class="text-purple-300 font-bold mb-3 flex justify-between">
+                    <span>Hàm Euler</span>
+                    <span class="text-[10px] bg-purple-900 px-2 py-1 rounded text-purple-200">φ(n)</span>
+                </h2>
+                <div class="space-y-2">
+                    <input id="euler_n" placeholder="Nhập n" class="w-full bg-slate-900 p-2 rounded border border-slate-600 focus:border-purple-500 outline-none">
+                    <button onclick="calcEuler()" class="w-full bg-purple-600 hover:bg-purple-500 p-2 rounded font-bold transition-all active:scale-95">Tính φ(n)</button>
+                    <div id="resEuler" class="mt-2 text-yellow-400 font-bold text-center text-xl min-h-[1.5rem]"></div>
+                </div>
+            </div>
+
+            <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 shadow-lg hover:border-orange-500 transition-colors">
+                <h2 class="text-orange-300 font-bold mb-3">Kiểm tra Căn nguyên thủy</h2>
+                <div class="space-y-2">
+                    <input id="prim_a" placeholder="Cơ số a" class="w-full bg-slate-900 p-2 rounded border border-slate-600 focus:border-orange-500 outline-none">
+                    <input id="prim_n" placeholder="Modulo n" class="w-full bg-slate-900 p-2 rounded border border-slate-600 focus:border-orange-500 outline-none">
+                    <button onclick="checkPrimitive()" class="w-full bg-orange-600 hover:bg-orange-500 p-2 rounded font-bold transition-all active:scale-95">Kiểm tra</button>
+                    <div id="resPrim" class="mt-2 text-orange-200 font-bold text-center text-sm min-h-[1.5rem]"></div>
+                </div>
+            </div>
+
+            <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 shadow-lg hover:border-red-500 transition-colors">
+                <h2 class="text-red-300 font-bold mb-3 flex justify-between">
+                    <span>Log rời rạc</span>
+                    <span class="text-[10px] bg-red-900 px-2 py-1 rounded text-red-200">log_a(b) mod n</span>
+                </h2>
+                <div class="space-y-2">
+                    <input id="log_a" placeholder="Cơ số a" class="w-full bg-slate-900 p-2 rounded border border-slate-600">
+                    <input id="log_b" placeholder="Giá trị b" class="w-full bg-slate-900 p-2 rounded border border-slate-600">
+                    <input id="log_n" placeholder="Modulo n" class="w-full bg-slate-900 p-2 rounded border border-slate-600">
+                    <button onclick="calcLog()" class="w-full bg-red-600 hover:bg-red-500 p-2 rounded font-bold transition-all active:scale-95">Tìm k</button>
+                    <div id="resLog" class="mt-2 text-yellow-400 font-bold text-center text-xl min-h-[1.5rem]"></div>
+                </div>
+            </div>
+
+            <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 shadow-lg hover:border-indigo-500 transition-colors">
+                <h2 class="text-indigo-300 font-bold mb-3">Tính nhanh A1-A5</h2>
+                <div class="grid grid-cols-2 gap-2">
+                    <input id="eb_a" placeholder="a" class="bg-slate-900 p-2 rounded border border-slate-600 outline-none">
+                    <input id="eb_x" placeholder="x" class="bg-slate-900 p-2 rounded border border-slate-600 outline-none">
+                    <input id="eb_b" placeholder="b" class="bg-slate-900 p-2 rounded border border-slate-600 outline-none">
+                    <input id="eb_y" placeholder="y" class="bg-slate-900 p-2 rounded border border-slate-600 outline-none">
+                    <input id="eb_n" placeholder="n" class="col-span-2 bg-slate-900 p-2 rounded border border-slate-600 outline-none text-indigo-400 font-bold">
+                </div>
+                <button onclick="calcBasicExp()" class="w-full bg-indigo-600 hover:bg-indigo-500 p-2 mt-2 rounded font-bold transition-all active:scale-95">Kết quả</button>
+                <div id="resBasic" class="mt-2 p-2 bg-black/40 rounded text-indigo-300 font-mono text-sm leading-relaxed"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const big = (n) => BigInt(n);
+        function powerMod(a, m, n) {
+            let res = 1n; a = big(a) % big(n); m = big(m); let nn = big(n);
+            while (m > 0n) { if (m % 2n === 1n) res = (res * a) % nn; a = (a * a) % nn; m = m / 2n; }
+            return res;
+        }
+        function modInverse(a, n) {
+            let m0 = big(n), y = 0n, x = 1n; let aa = big(a), nn = big(n);
+            if (nn === 1n) return 0n;
+            while (aa > 1n) { if (nn === 0n) return "N/A"; let q = aa / nn; let t = nn; nn = aa % nn; aa = t; t = y; y = x - q * y; x = t; }
+            return x < 0n ? x + m0 : x;
+        }
+        function getEuler(n) {
+            let res = big(n); let num = big(n);
+            for (let i = 2n; i * i <= num; i++) { if (num % i === 0n) { while (num % i === 0n) num /= i; res -= res / i; } }
+            if (num > 1n) res -= res / num; return res;
+        }
+        function calcPower() { document.getElementById('resPower').innerText = `b = ${powerMod(document.getElementById('pow_a').value, document.getElementById('pow_m').value, document.getElementById('pow_n').value)}`; }
+        function calcInverse() { document.getElementById('resInverse').innerText = `x = ${modInverse(document.getElementById('inv_a').value, document.getElementById('inv_n').value)}`; }
+        function calcEuler() { document.getElementById('resEuler').innerText = `φ(n) = ${getEuler(document.getElementById('euler_n').value)}`; }
+        function checkPrimitive() {
+            let a = big(document.getElementById('prim_a').value), n = big(document.getElementById('prim_n').value), phi = getEuler(n);
+            let factors = [], temp = phi;
+            for(let i=2n; i*i <= temp; i++) { if(temp % i === 0n) { factors.push(i); while(temp % i === 0n) temp /= i; } }
+            if(temp > 1n) factors.push(temp);
+            let isPrim = true;
+            for(let f of factors) { if(powerMod(a, phi/f, n) === 1n) { isPrim = false; break; } }
+            document.getElementById('resPrim').innerText = isPrim ? "✓ ĐÚNG, là căn nguyên thủy" : "✗ KHÔNG phải căn nguyên thủy";
+        }
+        function calcLog() {
+            let a = big(document.getElementById('log_a').value), b = big(document.getElementById('log_b').value), n = big(document.getElementById('log_n').value);
+            for(let k=0n; k<n; k++) { if(powerMod(a, k, n) === b % n) { document.getElementById('resLog').innerText = `k = ${k}`; return; } }
+            document.getElementById('resLog').innerText = "Không tìm thấy";
+        }
+        function calcBasicExp() {
+            let a = big(document.getElementById('eb_a').value), x = big(document.getElementById('eb_x').value), b = big(document.getElementById('eb_b').value), y = big(document.getElementById('eb_y').value), n = big(document.getElementById('eb_n').value);
+            let ax = (a * x) % n, by = (b * y) % n, invBy = modInverse(by, n);
+            document.getElementById('resBasic').innerHTML = `A1 (Cộng): ${(ax + by) % n}<br>A2 (Trừ): ${(ax - by + n) % n}<br>A3 (Nhân): ${(ax * by) % n}<br>A4 (Nghịch đảo by): ${invBy}<br>A5 (Chia ax/by): ${(typeof invBy === 'string') ? 'N/A' : (ax * invBy) % n}`;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>AES-128 Toàn Bộ Các Bước</title>
+</head>
+<body class="bg-slate-900 text-slate-200 p-4 pb-20 font-mono">
+    <div class="max-w-6xl mx-auto space-y-6">
+        <a href="index.html" class="text-blue-400 hover:underline flex items-center gap-2">
+            <span>←</span> Quay lại Menu chính
+        </a>
+
+        <h1 class="text-2xl font-bold text-blue-400 border-b border-slate-700 pb-2 italic text-center uppercase">
+            MÁY TÍNH AES-128 CHI TIẾT 11 BÀI
+        </h1>
+        
+        <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-1">
+                    <label class="text-[10px] text-slate-400 uppercase tracking-widest">Thông điệp M (32 ký tự Hex)</label>
+                    <input id="inpM" class="w-full bg-slate-900 p-3 rounded border border-slate-600 text-blue-300 uppercase focus:border-blue-500 outline-none" placeholder="VD: 0123456789ABCDEFFEDCBA9876543210">
+                </div>
+                <div class="space-y-1">
+                    <label class="text-[10px] text-slate-400 uppercase tracking-widest">Khóa K (32 ký tự Hex)</label>
+                    <input id="inpK" class="w-full bg-slate-900 p-3 rounded border border-slate-600 text-emerald-300 uppercase focus:border-emerald-500 outline-none" placeholder="VD: 0F1571C947D9E8590CB7ADD6AF7F6798">
+                </div>
+            </div>
+            <button onclick="runAES()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-xl font-bold transition-all shadow-lg active:scale-95">
+                CHẠY TOÀN BỘ 10 VÒNG (11 BÀI TOÁN)
+            </button>
+        </div>
+
+        <div id="output" class="space-y-4">
+            </div>
+    </div>
+
+    <script>
+        const SBOX = [0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67, 0x2b, 0xfe, 0xd7, 0xab, 0x76, 0xca, 0x82, 0xc9, 0x7d, 0xfa, 0x59, 0x47, 0xf0, 0xad, 0xd4, 0xa2, 0xaf, 0x9c, 0xa4, 0x72, 0xc0, 0xb7, 0xfd, 0x93, 0x26, 0x36, 0x3f, 0xf7, 0xcc, 0x34, 0xa5, 0xe5, 0xf1, 0x71, 0xd8, 0x31, 0x15, 0x04, 0xc7, 0x23, 0xc3, 0x18, 0x96, 0x05, 0x9a, 0x07, 0x12, 0x80, 0xe2, 0xeb, 0x27, 0xb2, 0x75, 0x09, 0x83, 0x2c, 0x1a, 0x1b, 0x6e, 0x5a, 0xa0, 0x52, 0x3b, 0xd6, 0xb3, 0x29, 0xe3, 0x2f, 0x84, 0x53, 0xd1, 0x00, 0xed, 0x20, 0xfc, 0xb1, 0x5b, 0x6a, 0xcb, 0xbe, 0x39, 0x4a, 0x4c, 0x58, 0xcf, 0xd0, 0xef, 0xaa, 0xfb, 0x43, 0x4d, 0x33, 0x85, 0x45, 0xf9, 0x02, 0x7f, 0x50, 0x3c, 0x9f, 0xa8, 0x51, 0xa3, 0x40, 0x8f, 0x92, 0x9d, 0x38, 0xf5, 0xbc, 0xb6, 0xda, 0x21, 0x10, 0xff, 0xf3, 0xd2, 0xcd, 0x0c, 0x13, 0xec, 0x5f, 0x97, 0x44, 0x17, 0xc4, 0xa7, 0x7e, 0x3d, 0x64, 0x5d, 0x19, 0x73, 0x60, 0x81, 0x4f, 0xdc, 0x22, 0x2a, 0x90, 0x88, 0x46, 0xee, 0xb8, 0x14, 0xde, 0x5e, 0x0b, 0xdb, 0xe0, 0x32, 0x3a, 0x0a, 0x49, 0x06, 0x24, 0x5c, 0xc2, 0xd3, 0xac, 0x62, 0x91, 0x95, 0xe4, 0x79, 0xe7, 0xc8, 0x37, 0x6d, 0x8d, 0xd5, 0x4e, 0xa9, 0x6c, 0x56, 0xf4, 0xea, 0x65, 0x7a, 0xae, 0x08, 0xba, 0x78, 0x25, 0x2e, 0x1c, 0xa6, 0xb4, 0xc6, 0xe8, 0xdd, 0x74, 0x1f, 0x4b, 0xbd, 0x8b, 0x8a, 0x70, 0x3e, 0xb5, 0x66, 0x48, 0x03, 0xf6, 0x0e, 0x61, 0x35, 0x57, 0xb9, 0x86, 0xc1, 0x1d, 0x9e, 0xe1, 0xf8, 0x98, 0x11, 0x69, 0xd9, 0x8e, 0x94, 0x9b, 0x1e, 0x87, 0xe9, 0xce, 0x55, 0x28, 0xdf, 0x8c, 0xa1, 0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0, 0x54, 0xbb, 0x16];
+        const RCON = [0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1B, 0x36];
+
+        function xor(a, b) {
+            let res = "";
+            for (let i = 0; i < a.length; i++) res += (parseInt(a[i], 16) ^ parseInt(b[i], 16)).toString(16).toUpperCase();
+            return res.padStart(a.length, '0');
+        }
+
+        function subBytes(s) {
+            let res = "";
+            for (let i = 0; i < 32; i += 2) res += SBOX[parseInt(s.substr(i, 2), 16)].toString(16).padStart(2, '0').toUpperCase();
+            return res;
+        }
+
+        function shiftRows(s) {
+            let b = []; for(let i=0; i<32; i+=2) b.push(s.substr(i,2));
+            return b[0]+b[4]+b[8]+b[12] + b[5]+b[9]+b[13]+b[1] + b[10]+b[14]+b[2]+b[6] + b[15]+b[3]+b[7]+b[11];
+        }
+
+        function mul(a, b) {
+            let p = 0;
+            for (let i = 0; i < 8; i++) {
+                if (b & 1) p ^= a;
+                let hi = a & 0x80;
+                a <<= 1;
+                if (hi) a ^= 0x1b;
+                b >>= 1;
+            }
+            return p & 0xFF;
+        }
+
+        function mixColumns(s) {
+            let b = []; for(let i=0; i<32; i+=2) b.push(parseInt(s.substr(i,2), 16));
+            let res = [];
+            for (let i = 0; i < 4; i++) {
+                let c = b.slice(i * 4, i * 4 + 4);
+                res.push(mul(2, c[0]) ^ mul(3, c[1]) ^ c[2] ^ c[3]);
+                res.push(c[0] ^ mul(2, c[1]) ^ mul(3, c[2]) ^ c[3]);
+                res.push(c[0] ^ c[1] ^ mul(2, c[2]) ^ mul(3, c[3]));
+                res.push(mul(3, c[0]) ^ c[1] ^ c[2] ^ mul(2, c[3]));
+            }
+            return res.map(x => x.toString(16).padStart(2, '0').toUpperCase()).join('');
+        }
+
+        function runAES() {
+            let M = document.getElementById('inpM').value.trim().toUpperCase();
+            let K = document.getElementById('inpK').value.trim().toUpperCase();
+            if(M.length !== 32 || K.length !== 32) { alert("Vui lòng nhập đủ 32 ký tự Hex!"); return; }
+            
+            let outArea = document.getElementById('output');
+            outArea.innerHTML = "";
+
+            // --- SINH KHÓA ---
+            let keys = [K];
+            for(let i=1; i<=10; i++){
+                let prevW = [keys[i-1].substr(0,8), keys[i-1].substr(8,8), keys[i-1].substr(16,8), keys[i-1].substr(24,8)];
+                let rw = prevW[3].substr(2) + prevW[3].substr(0,2);
+                let sw = ""; for(let j=0; j<8; j+=2) sw += SBOX[parseInt(rw.substr(j, 2), 16)].toString(16).padStart(2,'0').toUpperCase();
+                let rc = RCON[i-1].toString(16).padStart(2,'0') + "000000";
+                let xcsw = xor(sw, rc);
+                let nextW = [];
+                nextW[0] = xor(xcsw, prevW[0]);
+                nextW[1] = xor(nextW[0], prevW[1]);
+                nextW[2] = xor(nextW[1], prevW[2]);
+                nextW[3] = xor(nextW[2], prevW[3]);
+                keys.push(nextW.join(''));
+            }
+
+            let state = xor(M, K);
+            let html = `<div class="p-4 bg-black/60 rounded-xl border border-slate-700 text-yellow-400 font-bold mb-4">KHỞI TẠO: AddRoundKey(M, K₀) = ${state}</div>`;
+
+            for(let i=1; i<=10; i++) {
+                html += `<div class="bg-slate-800 p-4 rounded-xl border-l-4 border-blue-500 space-y-1 shadow-md">`;
+                html += `<b class="text-blue-400 uppercase">VÒNG ${i}:</b><br>`;
+                
+                let sb = subBytes(state);
+                html += `<span class="text-slate-400">SubBytes:</span> <span class="text-slate-200">${sb}</span><br>`;
+                
+                let sr = shiftRows(sb);
+                html += `<span class="text-slate-400">ShiftRows:</span> <span class="text-slate-200">${sr}</span><br>`;
+                
+                if(i < 10) {
+                    let mc = mixColumns(sr);
+                    html += `<span class="text-slate-400">MixColumns:</span> <span class="text-slate-200">${mc}</span><br>`;
+                    state = xor(mc, keys[i]);
+                    html += `<div class="mt-2 pt-2 border-t border-slate-700 font-bold text-blue-400">AddRoundKey (K${i}): ${state}</div>`;
+                } else {
+                    state = xor(sr, keys[10]);
+                    html += `<div class="mt-4 p-4 bg-emerald-900/30 border border-emerald-500 rounded text-emerald-400 font-bold text-center text-lg">BÀI 11 - KẾT QUẢ CUỐI CÙNG (C): ${state}</div>`;
+                }
+                html += `</div>`;
+            }
+            outArea.innerHTML = html;
+        }
+    </script>
+</body>
+</html>

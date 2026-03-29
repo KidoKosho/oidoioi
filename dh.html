@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head><meta charset="UTF-8"><script src="https://cdn.tailwindcss.com"></script><title>DH Step-by-Step</title></head>
+<body class="bg-slate-900 text-slate-200 p-4 pb-20">
+    <div class="max-w-5xl mx-auto space-y-6">
+        <a href="index.html" class="text-blue-400 hover:underline">← Menu</a>
+        <h1 class="text-2xl font-bold text-yellow-500 border-b border-slate-700 pb-2 italic text-center uppercase">Diffie-Hellman: Trao đổi khóa chi tiết</h1>
+        
+        <div class="bg-slate-800 p-4 rounded-xl grid grid-cols-2 gap-4 border border-slate-700">
+            <div><label class="text-[10px] block mb-1">Số nguyên tố q</label><input id="q" placeholder="VD: 7523" class="w-full bg-slate-900 p-2 rounded border border-slate-600 font-mono text-yellow-500"></div>
+            <div><label class="text-[10px] block mb-1">Căn nguyên thủy a</label><input id="a" placeholder="VD: 5" class="w-full bg-slate-900 p-2 rounded border border-slate-600 font-mono text-yellow-500"></div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <section class="bg-slate-800 p-6 rounded-2xl border-t-4 border-blue-500 shadow-xl">
+                <h2 class="text-lg font-bold text-blue-400 mb-4">PHÍA AN</h2>
+                <input id="xA" placeholder="Khóa riêng xA" class="w-full bg-slate-900 p-2 rounded border border-slate-600 font-mono mb-4">
+                <button onclick="calcAn()" class="w-full bg-blue-600 py-2 rounded font-bold mb-4">BƯỚC 1: TÍNH yA</button>
+                <div id="resYa" class="p-3 bg-black/40 rounded font-mono text-sm mb-4">yA = a^xA mod q = ?</div>
+                <input id="yB_in" placeholder="Nhận yB từ Ba" class="w-full bg-slate-900 p-2 rounded border border-slate-600 font-mono mb-4 text-emerald-300">
+                <button onclick="calcKAn()" class="w-full bg-indigo-600 py-2 rounded font-bold">BƯỚC 2: TÍNH KHÓA K</button>
+            </section>
+
+            <section class="bg-slate-800 p-6 rounded-2xl border-t-4 border-emerald-500 shadow-xl">
+                <h2 class="text-lg font-bold text-emerald-400 mb-4">PHÍA BA</h2>
+                <input id="xB" placeholder="Khóa riêng xB" class="w-full bg-slate-900 p-2 rounded border border-slate-600 font-mono mb-4">
+                <button onclick="calcBa()" class="w-full bg-emerald-600 py-2 rounded font-bold mb-4">BƯỚC 1: TÍNH yB</button>
+                <div id="resYb" class="p-3 bg-black/40 rounded font-mono text-sm mb-4">yB = a^xB mod q = ?</div>
+                <input id="yA_in" placeholder="Nhận yA từ An" class="w-full bg-slate-900 p-2 rounded border border-slate-600 font-mono mb-4 text-blue-300">
+                <button onclick="calcKBa()" class="w-full bg-teal-600 py-2 rounded font-bold">BƯỚC 2: TÍNH KHÓA K</button>
+            </section>
+        </div>
+
+        <section class="bg-slate-800 p-5 rounded-xl border border-slate-700">
+            <h2 class="text-xs font-bold text-yellow-400 mb-4 uppercase">Lời giải để chép vào bài:</h2>
+            <div id="solDH" class="bg-black/50 p-4 rounded font-mono text-sm leading-relaxed text-slate-300">Chưa có dữ liệu...</div>
+        </section>
+    </div>
+    <script>
+        const big = (n) => BigInt(n);
+        function mPow(b, e, m) { let r = 1n; b = big(b)%big(m); e = big(e); while(e>0n){ if(e%2n===1n) r=(r*b)%big(m); b=(b*b)%big(m); e/=2n; } return r; }
+        let q_v, a_v;
+        function getCommon() { q_v = big(document.getElementById('q').value); a_v = big(document.getElementById('a').value); }
+        function calcAn() { getCommon(); const xA = big(document.getElementById('xA').value); const yA = mPow(a_v, xA, q_v); document.getElementById('resYa').innerHTML = `yA = ${a_v}^${xA} mod ${q_v} = <b>${yA}</b>`; document.getElementById('yA_in').value = yA; }
+        function calcBa() { getCommon(); const xB = big(document.getElementById('xB').value); const yB = mPow(a_v, xB, q_v); document.getElementById('resYb').innerHTML = `yB = ${a_v}^${xB} mod ${q_v} = <b>${yB}</b>`; document.getElementById('yB_in').value = yB; }
+        function calcKAn() { 
+            const yB = big(document.getElementById('yB_in').value), xA = big(document.getElementById('xA').value); const K = mPow(yB, xA, q_v);
+            document.getElementById('solDH').innerHTML = `1. An tính yA = a^xA mod q = ${a_v}^${xA} mod ${q_v} = <b>${document.getElementById('yA_in').value}</b><br>2. Ba tính yB = a^xB mod q = <b>${yB}</b><br>3. An nhận yB, tính K = yB^xA mod q = ${yB}^${xA} mod ${q_v} = <b>${K}</b>`;
+        }
+        function calcKBa() { const yA = big(document.getElementById('yA_in').value), xB = big(document.getElementById('xB').value); const K = mPow(yA, xB, q_v); document.getElementById('solDH').innerHTML += `<br>4. Ba nhận yA, tính K = yA^xB mod q = ${yA}^${xB} mod ${q_v} = <b>${K}</b>`; }
+    </script>
+</body></html>
