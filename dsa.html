@@ -1,67 +1,88 @@
 <!DOCTYPE html>
 <html lang="vi">
-<head><meta charset="UTF-8"><script src="https://cdn.tailwindcss.com"></script><title>DSA Sign & Verify</title></head>
-<body class="bg-slate-900 text-slate-200 p-4 pb-20">
-    <div class="max-w-5xl mx-auto space-y-6">
-        <a href="index.html" class="text-blue-400 hover:underline">← Menu</a>
-        <h1 class="text-2xl font-bold text-orange-500 border-b border-slate-700 pb-2 italic text-center uppercase">Chữ ký số DSA: Quy trình chuẩn</h1>
-        
-        <div class="bg-slate-800 p-4 rounded-xl grid grid-cols-3 gap-4 border border-slate-700 shadow-md">
-            <div><label class="text-[10px] block mb-1">Số p</label><input id="p" class="w-full bg-slate-900 p-2 rounded border border-slate-600 font-mono"></div>
-            <div><label class="text-[10px] block mb-1">Số q</label><input id="q" class="w-full bg-slate-900 p-2 rounded border border-slate-600 font-mono"></div>
-            <div><label class="text-[10px] block mb-1">Số h</label><input id="h" class="w-full bg-slate-900 p-2 rounded border border-slate-600 font-mono"></div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>DSA Sign & Verify - Mobile</title>
+    <style>
+        /* Tối ưu font chữ và loại bỏ hiệu ứng zoom khi focus input trên iOS */
+        body { font-family: ui-sans-serif, system-ui, sans-serif; }
+        input { font-size: 16px !important; } 
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200 p-4 pb-10">
+    <div class="max-w-md mx-auto space-y-6">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+            <h1 class="text-xl font-black text-orange-500 italic uppercase">DSA Digital Sign</h1>
+            <a href="index.html" class="text-xs text-blue-400">← Quay lại</a>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <section class="bg-slate-800 p-6 rounded-2xl border-t-4 border-orange-500 shadow-xl">
-                <h2 class="text-lg font-bold text-orange-400 mb-4">NGƯỜI KÝ (SIGN)</h2>
-                <div class="space-y-3 text-xs">
-                    <div class="grid grid-cols-3 gap-2">
-                        <input id="xA" placeholder="xA (Riêng)" class="bg-slate-900 p-2 rounded border border-slate-600">
-                        <input id="k" placeholder="k (Ngẫu nhiên)" class="bg-slate-900 p-2 rounded border border-slate-600">
-                        <input id="hm" placeholder="H(M) (Băm)" class="bg-slate-900 p-2 rounded border border-slate-600">
-                    </div>
-                    <button onclick="sign()" class="w-full bg-orange-600 py-2 rounded font-bold uppercase">Tạo chữ ký (r, s)</button>
-                    <div id="resSign" class="p-3 bg-black/40 rounded font-mono text-orange-200 leading-relaxed">g=?, y=?, r=?, s=?</div>
-                </div>
-            </section>
-
-            <section class="bg-slate-800 p-6 rounded-2xl border-t-4 border-green-500 shadow-xl">
-                <h2 class="text-lg font-bold text-green-400 mb-4">XÁC THỰC (VERIFY)</h2>
-                <div class="space-y-3 text-xs">
-                    <div class="grid grid-cols-2 gap-2 font-mono">
-                        <input id="r_in" placeholder="r" class="bg-slate-900 p-2 rounded border border-slate-600 text-green-300">
-                        <input id="s_in" placeholder="s" class="bg-slate-900 p-2 rounded border border-slate-600 text-green-300">
-                    </div>
-                    <button onclick="verify()" class="w-full bg-green-600 py-2 rounded font-bold uppercase">Kiểm tra chữ ký</button>
-                    <div id="resVer" class="p-3 bg-black/40 rounded font-mono text-green-200 leading-relaxed italic">w=?, u1=?, u2=?, v=?</div>
-                </div>
-            </section>
+        <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-xl">
+            <p class="text-[10px] font-bold text-slate-500 uppercase mb-3 text-center">Tham số hệ thống (p, q, h)</p>
+            <div class="grid grid-cols-3 gap-2">
+                <input id="p" placeholder="p" inputmode="numeric" class="w-full bg-black/40 p-3 rounded-xl border border-slate-700 text-center text-orange-400 focus:border-orange-500 outline-none">
+                <input id="q" placeholder="q" inputmode="numeric" class="w-full bg-black/40 p-3 rounded-xl border border-slate-700 text-center text-orange-400 focus:border-orange-500 outline-none">
+                <input id="h" placeholder="h" inputmode="numeric" class="w-full bg-black/40 p-3 rounded-xl border border-slate-700 text-center text-orange-400 focus:border-orange-500 outline-none">
+            </div>
         </div>
 
-        <section class="bg-slate-800 p-5 rounded-xl border border-slate-700 shadow-lg">
-            <h2 class="text-xs font-bold text-pink-400 uppercase mb-4">Lời giải chi tiết từng bước (DSA)</h2>
-            <div id="solDSA" class="bg-black/50 p-4 rounded font-mono text-sm leading-relaxed text-slate-300">Chưa có lời giải...</div>
+        <section class="bg-slate-900 p-5 rounded-3xl border-t-4 border-orange-600 shadow-2xl space-y-4">
+            <h2 class="text-sm font-bold text-orange-400 uppercase tracking-widest">NGƯỜI KÝ</h2>
+            <div class="grid grid-cols-3 gap-2">
+                <input id="xA" placeholder="xA" inputmode="numeric" class="bg-black/50 p-3 rounded-xl border border-slate-700 text-xs text-center">
+                <input id="k" placeholder="k" inputmode="numeric" class="bg-black/50 p-3 rounded-xl border border-slate-700 text-xs text-center">
+                <input id="hm" placeholder="H(M)" inputmode="numeric" class="bg-black/50 p-3 rounded-xl border border-slate-700 text-xs text-center">
+            </div>
+            <button onclick="sign()" class="w-full bg-orange-600 active:bg-orange-700 py-4 rounded-2xl font-black uppercase text-sm shadow-lg transition-transform active:scale-95">Tạo chữ ký (r, s)</button>
+            <div id="resSign" class="p-4 bg-black/40 rounded-2xl font-mono text-xs text-orange-200 border border-orange-900/20 leading-loose">
+                g=?, y=?, r=?, s=?
+            </div>
+        </section>
+
+        <section class="bg-slate-900 p-5 rounded-3xl border-t-4 border-emerald-600 shadow-2xl space-y-4">
+            <h2 class="text-sm font-bold text-emerald-400 uppercase tracking-widest">XÁC THỰC</h2>
+            <div class="grid grid-cols-2 gap-2">
+                <input id="r_in" placeholder="Nhận r" inputmode="numeric" class="bg-black/50 p-3 rounded-xl border border-slate-700 text-xs text-emerald-400">
+                <input id="s_in" placeholder="Nhận s" inputmode="numeric" class="bg-black/50 p-3 rounded-xl border border-slate-700 text-xs text-emerald-400">
+            </div>
+            <button onclick="verify()" class="w-full bg-emerald-600 active:bg-emerald-700 py-4 rounded-2xl font-black uppercase text-sm shadow-lg transition-transform active:scale-95">Kiểm tra chữ ký</button>
+            <div id="resVer" class="p-4 bg-black/40 rounded-2xl font-mono text-xs text-emerald-200 border border-emerald-900/20 leading-loose">
+                w=?, u1=?, u2=?, v=?
+            </div>
+        </section>
+
+        <section class="bg-slate-900 p-5 rounded-2xl border border-slate-800">
+            <h2 class="text-[10px] font-black text-pink-500 uppercase mb-3">Lời giải chi tiết từng bước</h2>
+            <div id="solDSA" class="bg-black/30 p-4 rounded-xl font-mono text-[11px] leading-relaxed text-slate-400 overflow-x-auto">
+                Chưa có lời giải...
+            </div>
         </section>
     </div>
+
     <script>
         const big = (n) => BigInt(n);
         function mPow(b, e, m) { let r = 1n; b = big(b)%big(m); e = big(e); while(e>0n){ if(e%2n===1n) r=(r*b)%big(m); b=(b*b)%big(m); e/=2n; } return r; }
-        function mInv(a, m) { let m0 = big(m), y = 0n, x = 1n; a = big(a); m = big(m); while (a > 1n) { let q = a / m, t = m; m = a % m; a = t; t = y; y = x - q * y; x = t; } return x < 0n ? x + m0 : x; }
+        function mInv(a, m) { let m0 = big(m), y = 0n, x = 1n; a = big(a); m = big(m); while (a > 1n) { if (m === 0n) return 0n; let q = a / m, t = m; m = a % m; a = t; t = y; y = x - q * y; x = t; } return x < 0n ? x + m0 : x; }
         
         function sign() {
-            const p = big(document.getElementById('p').value), q = big(document.getElementById('q').value), h = big(document.getElementById('h').value), x = big(document.getElementById('xA').value), k = big(document.getElementById('k').value), hm = big(document.getElementById('hm').value);
-            const g = mPow(h, (p-1n)/q, p), y = mPow(g, x, p), r = mPow(g, k, p)%q, s = (mInv(k,q)*(hm+x*r))%q;
-            document.getElementById('resSign').innerHTML = `g = ${g}<br>y = ${y}<br>r = <b>${r}</b>, s = <b>${s}</b>`;
-            document.getElementById('r_in').value = r; document.getElementById('s_in').value = s;
-            document.getElementById('solDSA').innerHTML = `<p class="text-orange-400 underline font-bold">BƯỚC KÝ:</p>1. Tính g = h^((p-1)/q) mod p = ${g}<br>2. Tính khóa công khai y = g^x mod p = ${y}<br>3. Tính r = (g^k mod p) mod q = <b>${r}</b><br>4. Tính s = [k⁻¹ * (H(M) + x*r)] mod q = <b>${s}</b>`;
+            try {
+                const p = big(document.getElementById('p').value), q = big(document.getElementById('q').value), h = big(document.getElementById('h').value), x = big(document.getElementById('xA').value), k = big(document.getElementById('k').value), hm = big(document.getElementById('hm').value);
+                const g = mPow(h, (p-1n)/q, p), y = mPow(g, x, p), r = mPow(g, k, p)%q, s = (mInv(k,q)*(hm+x*r))%q;
+                document.getElementById('resSign').innerHTML = `g = ${g}<br>y = ${y}<br><b>r = ${r}</b>, <b>s = ${s}</b>`;
+                document.getElementById('r_in').value = r; document.getElementById('s_in').value = s;
+                document.getElementById('solDSA').innerHTML = `<p class="text-orange-400 underline font-bold mb-1">BƯỚC KÝ:</p>1. g = h^((p-1)/q) mod p = ${g}<br>2. y = g^x mod p = ${y}<br>3. r = (g^k mod p) mod q = ${r}<br>4. s = [k⁻¹ * (H(M) + x*r)] mod q = ${s}`;
+            } catch(e) { alert("Kiểm tra lại dữ liệu nhập nhé Việt!"); }
         }
 
         function verify() {
-            const p = big(document.getElementById('p').value), q = big(document.getElementById('q').value), h = big(document.getElementById('h').value), x = big(document.getElementById('xA').value), r = big(document.getElementById('r_in').value), s = big(document.getElementById('s_in').value), hm = big(document.getElementById('hm').value);
-            const g = mPow(h, (p-1n)/q, p), y = mPow(g, x, p), w = mInv(s, q), u1 = (hm*w)%q, u2 = (r*w)%q, v = ((mPow(g, u1, p)*mPow(y, u2, p))%p)%q;
-            document.getElementById('resVer').innerHTML = `w = ${w}<br>u1 = ${u1}, u2 = ${u2}<br>v = <b>${v}</b>`;
-            document.getElementById('solDSA').innerHTML += `<br><br><p class="text-green-400 underline font-bold">BƯỚC XÁC THỰC:</p>1. Tính w = s⁻¹ mod q = ${w}<br>2. Tính u1 = [H(M)*w] mod q = ${u1}<br>3. Tính u2 = [r*w] mod q = ${u2}<br>4. Tính v = [(g^u1 * y^u2) mod p] mod q = <b>${v}</b><br>=> Kết quả: ${v==r?'v = r (Hợp lệ)':'v != r (Không hợp lệ)'}`;
+            try {
+                const p = big(document.getElementById('p').value), q = big(document.getElementById('q').value), h = big(document.getElementById('h').value), x = big(document.getElementById('xA').value), r = big(document.getElementById('r_in').value), s = big(document.getElementById('s_in').value), hm = big(document.getElementById('hm').value);
+                const g = mPow(h, (p-1n)/q, p), y = mPow(g, x, p), w = mInv(s, q), u1 = (hm*w)%q, u2 = (r*w)%q, v = ((mPow(g, u1, p)*mPow(y, u2, p))%p)%q;
+                document.getElementById('resVer').innerHTML = `w = ${w}<br>u1 = ${u1}, u2 = ${u2}<br><b>v = ${v}</b>`;
+                document.getElementById('solDSA').innerHTML += `<br><br><p class="text-green-400 underline font-bold mb-1">BƯỚC XÁC THỰC:</p>1. w = s⁻¹ mod q = ${w}<br>2. u1 = [H(M)*w] mod q = ${u1}<br>3. u2 = [r*w] mod q = ${u2}<br>4. v = [(g^u1 * y^u2) mod p] mod q = ${v}<br>=> Kết quả: ${v==r?'v = r (Hợp lệ)':'v != r (Lỗi)'}`;
+            } catch(e) { alert("Thông số xác thực bị thiếu!"); }
         }
     </script>
-</body></html>
+</body>
+</html>

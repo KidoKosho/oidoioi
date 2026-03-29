@@ -2,99 +2,140 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>RSA Step-by-Step</title>
+    <title>RSA Ultimate - Kido Edition</title>
 </head>
-<body class="bg-slate-900 text-slate-200 p-6 pb-20">
-    <div class="max-w-3xl mx-auto space-y-8">
-        <a href="index.html" class="text-blue-400 hover:underline">← Quay lại Menu</a>
-        <h1 class="text-2xl font-bold text-purple-400 border-b border-slate-700 pb-2 italic">RSA: TÌM E, D VÀ TÍNH TOÁN</h1>
+<body class="bg-slate-900 text-slate-200 p-4 pb-20 font-mono text-sm">
+    <div class="max-w-3xl mx-auto space-y-6">
+        <div class="flex justify-between items-center mb-4">
+            <a href="index.html" class="text-blue-400 hover:underline flex items-center gap-2">
+                <span>←</span> Menu
+            </a>
+            <h1 class="text-xl font-bold text-purple-400 italic">RSA ALL-IN-ONE SOLVER</h1>
+        </div>
 
-        <section class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl">
-            <h2 class="text-emerald-400 font-bold mb-4 uppercase text-sm tracking-widest">Bước 1: Nhập p, q để tìm điều kiện của e</h2>
-            <div class="grid grid-cols-2 gap-4 mb-4">
-                <input id="p_in" placeholder="Nhập p (ví dụ: 11)" class="bg-slate-900 p-3 rounded border border-slate-600 font-mono text-purple-400">
-                <input id="q_in" placeholder="Nhập q (ví dụ: 13)" class="bg-slate-900 p-3 rounded border border-slate-600 font-mono text-purple-400">
+        <section class="bg-slate-800 p-5 rounded-xl border border-slate-700 shadow-lg">
+            <h2 class="text-emerald-400 font-bold mb-4 uppercase text-[10px] tracking-widest">B1: Thiết lập n & Phi(n)</h2>
+            <div class="grid grid-cols-2 gap-3 mb-4">
+                <input id="p_in" placeholder="Nhập p" inputmode="numeric" class="bg-slate-900 p-3 rounded border border-slate-700 focus:border-emerald-500 outline-none text-purple-400 font-bold">
+                <input id="q_in" placeholder="Nhập q" inputmode="numeric" class="bg-slate-900 p-3 rounded border border-slate-700 focus:border-emerald-500 outline-none text-purple-400 font-bold">
             </div>
-            <button onclick="step1()" class="w-full bg-blue-600 hover:bg-blue-500 py-2 rounded font-bold transition">TÍNH n VÀ Φ(n)</button>
-            <div id="resStep1" class="mt-4 p-4 bg-black/40 rounded text-sm font-mono text-blue-300 leading-relaxed min-h-[50px]">
-                Nhập p, q để bắt đầu...
-            </div>
-        </section>
-
-        <section class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl">
-            <h2 class="text-yellow-500 font-bold mb-4 uppercase text-sm tracking-widest">Bước 2: Chọn e để tìm d (khóa bí mật)</h2>
-            <div class="flex gap-4 mb-4">
-                <input id="e_in" placeholder="Chọn 1 số e từ gợi ý trên..." class="flex-1 bg-slate-900 p-3 rounded border border-slate-600 font-mono text-yellow-400">
-                <button onclick="step2()" class="bg-yellow-600 hover:bg-yellow-500 px-6 rounded font-bold transition text-white text-sm">TÌM d</button>
-            </div>
-            <div id="resStep2" class="p-4 bg-black/40 rounded text-sm font-mono text-yellow-200 text-center border border-yellow-900/20">
-                d = ?
-            </div>
-        </section>
-
-        <section class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl">
-            <h2 class="text-pink-500 font-bold mb-4 uppercase text-sm tracking-widest">Bước 3: Thực hiện Mã hóa / Giải mã</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="space-y-3">
-                    <label class="text-xs text-slate-400 uppercase">Mã hóa (M → C)</label>
-                    <input id="M_val" placeholder="Nhập thông điệp M" class="w-full bg-slate-900 p-3 rounded border border-slate-600 font-mono text-pink-400">
-                    <button onclick="calcRSA('enc')" class="w-full bg-pink-600 py-2 rounded font-bold text-xs">C = M^e mod n</button>
-                    <div id="resC" class="p-3 bg-black/60 rounded text-center text-pink-300 font-bold">-</div>
-                </div>
-                <div class="space-y-3">
-                    <label class="text-xs text-slate-400 uppercase">Giải mã (C → M)</label>
-                    <input id="C_val" placeholder="Nhập bản mã C" class="w-full bg-slate-900 p-3 rounded border border-slate-600 font-mono text-orange-400">
-                    <button onclick="calcRSA('dec')" class="w-full bg-orange-600 py-2 rounded font-bold text-xs">M = C^d mod n</button>
-                    <div id="resM" class="p-3 bg-black/60 rounded text-center text-orange-300 font-bold">-</div>
+            <button onclick="step1()" class="w-full bg-blue-600 hover:bg-blue-500 py-3 rounded font-bold transition active:scale-95 mb-4">TÍNH TỪ P, Q</button>
+            
+            <div class="pt-4 border-t border-slate-700 space-y-3">
+                <label class="text-[9px] text-slate-500 italic">Hoặc nhập trực tiếp nếu đề cho sẵn:</label>
+                <div class="grid grid-cols-2 gap-3">
+                    <input id="n_manual" onchange="syncN()" placeholder="Số n" inputmode="numeric" class="bg-slate-900 p-2 rounded border border-slate-700 text-blue-400 font-bold">
+                    <input id="phi_manual" onchange="syncPhi()" placeholder="Số Phi(n)" inputmode="numeric" class="bg-slate-900 p-2 rounded border border-slate-700 text-blue-400 font-bold">
                 </div>
             </div>
+            <div id="resStep1" class="mt-4 p-3 bg-black/40 rounded text-[11px] text-blue-300 border border-blue-900/20">
+                Chưa có dữ liệu hệ thống.
+            </div>
         </section>
+
+        <section class="bg-slate-800 p-5 rounded-xl border border-slate-700 shadow-lg">
+            <h2 class="text-yellow-500 font-bold mb-4 uppercase text-[10px] tracking-widest">B2: Tìm cặp khóa (e ↔ d)</h2>
+            <div class="flex flex-col sm:flex-row gap-3 mb-4">
+                <input id="key_in" placeholder="Nhập khóa đã biết (e hoặc d)" inputmode="numeric" class="flex-1 bg-slate-900 p-3 rounded border border-slate-700 focus:border-yellow-500 outline-none text-yellow-400 font-bold text-center text-lg">
+                <button onclick="step2()" class="bg-yellow-600 hover:bg-yellow-500 px-8 py-3 rounded font-bold transition active:scale-95 text-white uppercase text-xs">Tìm khóa còn lại</button>
+            </div>
+            <div id="resStep2" class="p-3 bg-black/40 rounded text-sm text-yellow-200 text-center border border-yellow-900/20 font-bold min-h-[45px] flex items-center justify-center">
+                Chờ nhập khóa...
+            </div>
+        </section>
+
+        <section class="bg-slate-800 p-5 rounded-xl border border-slate-700 shadow-lg">
+            <h2 class="text-pink-500 font-bold mb-4 uppercase text-[10px] tracking-widest">B3: Mã hóa & Giải mã</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-3">
+                    <label class="text-[10px] text-slate-400 uppercase font-bold tracking-tighter">Tìm C (Biết M và e)</label>
+                    <input id="M_val" placeholder="Nhập M" inputmode="numeric" class="w-full bg-slate-900 p-3 rounded border border-slate-700 focus:border-pink-500 outline-none text-pink-400 font-bold">
+                    <button onclick="calcRSA('enc')" class="w-full bg-pink-600 py-2 rounded font-bold text-[10px] uppercase shadow-lg shadow-pink-900/20">C = M^e mod n</button>
+                    <div id="resC" class="p-4 bg-black/60 rounded text-center text-pink-300 font-black text-2xl border border-pink-900/20">-</div>
+                </div>
+                <div class="space-y-3">
+                    <label class="text-[10px] text-slate-400 uppercase font-bold tracking-tighter">Tìm M (Biết C và d)</label>
+                    <input id="C_val" placeholder="Nhập C" inputmode="numeric" class="w-full bg-slate-900 p-3 rounded border border-slate-700 focus:border-orange-500 outline-none text-orange-400 font-bold">
+                    <button onclick="calcRSA('dec')" class="w-full bg-orange-600 py-2 rounded font-bold text-[10px] uppercase shadow-lg shadow-orange-900/20">M = C^d mod n</button>
+                    <div id="resM" class="p-4 bg-black/60 rounded text-center text-orange-300 font-black text-2xl border border-orange-900/20">-</div>
+                </div>
+            </div>
+        </section>
+        
+        <footer class="text-center opacity-30 text-[9px] uppercase tracking-[0.2em]">
+            Kido Ultimate RSA Solver v3.0
+        </footer>
     </div>
 
     <script>
-        const big = (n) => BigInt(n);
-        function gcd(a, b) { while (b) { a %= b; [a, b] = [b, a]; } return a; }
-        function mInv(a, m) { let m0 = m, y = 0n, x = 1n; a = big(a); m = big(m); while (a > 1n) { let q = a / m, t = m; m = a % m; a = t; t = y; y = x - q * y; x = t; } return x < 0n ? x + m0 : x; }
-        function mPow(b, e, m) { let r = 1n; b = big(b) % big(m); e = big(e); while (e > 0n) { if (e % 2n === 1n) r = (r * b) % big(m); b = (b * b) % big(m); e /= 2n; } return r; }
+        const big = (n) => BigInt(n || 0);
+        function gcd(a, b) { a=Math.abs(Number(a)); b=Math.abs(Number(b)); while (b) { a %= b; [a, b] = [b, a]; } return a; }
+        function mInv(a, m) { 
+            let m0 = big(m), y = 0n, x = 1n; a = big(a); m = big(m); 
+            if (m === 1n) return 0n; 
+            while (a > 1n) { 
+                if (m === 0n) return "N/A"; 
+                let q = a / m, t = m; m = a % m; a = t; t = y; y = x - q * y; x = t; 
+            } 
+            return x < 0n ? x + m0 : x; 
+        }
+        function mPow(b, e, m) { 
+            let r = 1n; b = big(b) % big(m); e = big(e); m = big(m); 
+            while (e > 0n) { if (e % 2n === 1n) r = (r * b) % m; b = (b * b) % m; e /= 2n; } 
+            return r; 
+        }
 
-        let n, phi, e, d;
+        let n_global, phi_global, e_global, d_global;
+
+        function syncN() { n_global = big(document.getElementById('n_manual').value); }
+        function syncPhi() { phi_global = big(document.getElementById('phi_manual').value); }
 
         function step1() {
             const p = big(document.getElementById('p_in').value);
             const q = big(document.getElementById('q_in').value);
-            n = p * q;
-            phi = (p - 1n) * (q - 1n);
+            if(p <= 1n || q <= 1n) return alert("Nhập p, q là số nguyên tố > 1 nhé!");
             
-            // Tìm 5 số e gợi ý đầu tiên (thường đề bài chọn số nhỏ)
+            n_global = p * q;
+            phi_global = (p - 1n) * (q - 1n);
+            
+            document.getElementById('n_manual').value = n_global.toString();
+            document.getElementById('phi_manual').value = phi_global.toString();
+            
             let suggestions = [];
-            for (let i = 3n; i < phi && suggestions.length < 5; i++) {
-                if (gcd(Number(i), Number(phi)) === 1) suggestions.push(i);
+            for (let i = 3n; i < phi_global && suggestions.length < 5; i++) {
+                if (gcd(i, phi_global) === 1) suggestions.push(i);
             }
-
-            document.getElementById('resStep1').innerHTML = `
-                - n = ${n}<br>
-                - Φ(n) = ${phi}<br>
-                - Điều kiện: 1 < e < ${phi} và gcd(e, ${phi}) = 1<br>
-                - <b>Gợi ý các số e hợp lệ:</b> <span class="text-white">${suggestions.join(', ')}...</span>
-            `;
+            document.getElementById('resStep1').innerHTML = `Đã tính: n = ${n_global} | Φ(n) = ${phi_global}<br>Gợi ý e: ${suggestions.join(', ')}`;
         }
 
         function step2() {
-            e = big(document.getElementById('e_in').value);
-            if (gcd(Number(e), Number(phi)) !== 1) return alert("Số e này không hợp lệ (không nguyên tố cùng nhau với Phi)!");
-            d = mInv(e, phi);
-            document.getElementById('resStep2').innerText = `d = ${d} (Khóa bí mật đã sẵn sàng)`;
+            if(!phi_global) return alert("Cần có số Phi(n) ở Bước 1 trước!");
+            let inputKey = big(document.getElementById('key_in').value);
+            if(gcd(inputKey, phi_global) !== 1) return alert("Khóa này không hợp lệ với Phi(n)!");
+            
+            let outputKey = mInv(inputKey, phi_global);
+            // Gán thông minh: e và d có thể đổi chỗ cho nhau
+            e_global = inputKey; 
+            d_global = outputKey;
+            
+            document.getElementById('resStep2').innerHTML = `Khóa đối ứng là: <span class="text-white text-xl ml-2">${outputKey}</span>`;
         }
 
         function calcRSA(type) {
-            if (type === 'enc') {
-                const M = big(document.getElementById('M_val').value);
-                document.getElementById('resC').innerText = "C = " + mPow(M, e, n).toString();
-            } else {
-                const C = big(document.getElementById('C_val').value);
-                document.getElementById('resM').innerText = "M = " + mPow(C, d, n).toString();
-            }
+            if(!n_global) return alert("Chưa có số n!");
+            try {
+                if (type === 'enc') {
+                    const M = big(document.getElementById('M_val').value);
+                    // Dùng e_global (khóa đã nhập ở Bước 2)
+                    document.getElementById('resC').innerText = mPow(M, e_global, n_global).toString();
+                } else {
+                    const C = big(document.getElementById('C_val').value);
+                    // Dùng d_global (khóa đã tính ở Bước 2)
+                    document.getElementById('resM').innerText = mPow(C, d_global, n_global).toString();
+                }
+            } catch(e) { alert("Thiếu dữ liệu (Khóa hoặc M/C)!"); }
         }
     </script>
 </body>

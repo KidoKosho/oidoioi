@@ -2,31 +2,53 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>DES Step-by-Step Generator</title>
+    <title>DES Step-by-Step Solver - Kido</title>
+    <style>
+        .hex-font { font-family: 'ui-monospace', SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+        .section-header { background: #1e293b; color: white; padding: 10px 15px; font-weight: 800; border-radius: 4px; margin-top: 25px; text-transform: uppercase; letter-spacing: 1px; }
+        .round-container { border: 2px solid #e2e8f0; border-radius: 8px; margin-top: 20px; overflow: hidden; }
+        .round-header { background: #ef4444; color: white; padding: 8px 15px; font-weight: 900; text-align: center; }
+        .step-item { padding: 10px 15px; border-bottom: 1px solid #f1f5f9; }
+        .step-label { color: #b91c1c; font-weight: 700; display: block; margin-bottom: 2px; font-size: 0.8rem; }
+        .final-result { background: #059669; color: white; padding: 20px; border-radius: 12px; margin-top: 30px; text-align: center; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    </style>
 </head>
-<body class="bg-slate-50 p-6 font-serif">
-    <div class="max-w-4xl mx-auto bg-white p-8 shadow-lg border border-slate-200">
-        <h1 class="text-2xl font-bold text-center text-red-700 uppercase mb-6">Báo cáo chi tiết mã hóa DES</h1>
-        
-        <div class="bg-slate-100 p-4 rounded-lg mb-6 grid grid-cols-2 gap-4">
-            <div>
-                <label class="block font-bold">Khóa K (64-bit Hex):</label>
-                <input id="keyK" class="w-full p-2 border font-mono uppercase" placeholder="Ví dụ: 3FF81CDA5F417784">
-            </div>
-            <div>
-                <label class="block font-bold">Bản tin M (64-bit Hex):</label>
-                <input id="textM" class="w-full p-2 border font-mono uppercase" placeholder="Ví dụ: FF1C9CA3596B7D48">
-            </div>
-            <button onclick="generateDES()" class="col-span-2 bg-red-600 text-white font-bold py-3 rounded hover:bg-red-700 transition">GIẢI CHI TIẾT BÀI TẬP</button>
+<body class="bg-slate-50 text-slate-900 p-4 md:p-8 font-sans">
+    <div class="max-w-4xl mx-auto bg-white shadow-xl rounded-2xl overflow-hidden border border-slate-200">
+        <div class="bg-red-700 p-6 text-white">
+            <h1 class="text-2xl font-black italic">DES STEP-BY-STEP SOLVER</h1>
+            <p class="text-xs opacity-80 uppercase tracking-widest">Trình giải chi tiết 16 vòng lặp - Designed for Kido</p>
         </div>
 
-        <div id="report" class="whitespace-pre-wrap font-mono text-sm text-slate-800 leading-relaxed">
+        <div class="p-6 space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-100 p-5 rounded-xl border border-slate-200">
+                <div>
+                    <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Khóa K (64-bit Hex)</label>
+                    <input id="keyK" class="w-full p-3 border-2 border-slate-300 rounded-lg hex-font focus:border-red-500 outline-none" placeholder="VD: 3FF81CDA5F417784">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Bản tin M (64-bit Hex)</label>
+                    <input id="textM" class="w-full p-3 border-2 border-slate-300 rounded-lg hex-font focus:border-red-500 outline-none" placeholder="VD: FF1C9CA3596B7D48">
+                </div>
+                <button onclick="solveDES()" class="md:col-span-2 bg-red-600 hover:bg-red-700 text-white font-black py-4 rounded-lg transition-transform active:scale-95 uppercase text-sm">
+                    Bắt đầu giải chi tiết theo yêu cầu
+                </button>
             </div>
+
+            <div id="outputArea" class="hidden">
+                <div id="solverContent" class="hex-font text-sm leading-relaxed text-slate-700"></div>
+            </div>
+
+            <div id="placeholder" class="text-center py-20 text-slate-400 italic">
+                Vui lòng nhập K và M để hệ thống xuất lời giải...
+            </div>
+        </div>
     </div>
 
     <script>
-        // Các bảng hoán vị DES (PC1, PC2, IP, E, S-Box, P, IP-1)
+        // Các bảng hằng số (giữ nguyên chuẩn DES)
         const PC1 = [57,49,41,33,25,17,9,1,58,50,42,34,26,18,10,2,59,51,43,35,27,19,11,3,60,52,44,36,63,55,47,39,31,23,15,7,62,54,46,38,30,22,14,6,61,53,45,37,29,21,13,5,28,20,12,4];
         const PC2 = [14,17,11,24,1,5,3,28,15,6,21,10,23,19,12,4,26,8,16,7,27,20,13,2,41,52,31,37,47,55,30,40,51,45,33,48,44,49,39,56,34,53,46,42,50,36,29,32];
         const IP = [58,50,42,34,26,18,10,2,60,52,44,36,28,20,12,4,62,54,46,38,30,22,14,6,64,56,48,40,32,24,16,8,57,49,41,33,25,17,9,1,59,51,43,35,27,19,11,3,61,53,45,37,29,21,13,5,63,55,47,39,31,23,15,7];
@@ -45,119 +67,124 @@
             [[13,2,8,4,6,15,11,1,10,9,3,14,5,0,12,7],[1,15,13,8,10,3,7,4,12,5,6,11,0,14,9,2],[7,11,4,1,9,12,14,2,0,6,10,13,15,3,5,8],[2,1,14,7,4,10,8,13,15,12,9,0,3,5,6,11]]
         ];
 
-        function hex2bin(hex) {
-            return hex.split('').map(c => parseInt(c, 16).toString(2).padStart(4, '0')).join('');
-        }
-
-        function bin2hex(bin) {
-            let hex = "";
-            for(let i=0; i<bin.length; i+=4) hex += parseInt(bin.substr(i,4), 2).toString(16).toUpperCase();
-            return hex;
-        }
-
-        function permute(input, table) {
-            return table.map(pos => input[pos-1]).join('');
-        }
-
-        function xor(a, b) {
+        const hex2bin = (h) => h.split('').map(c => parseInt(c,16).toString(2).padStart(4,'0')).join('');
+        const bin2hex = (b) => {
             let res = "";
-            for(let i=0; i<a.length; i++) res += (a[i] === b[i] ? '0' : '1');
+            for(let i=0; i<b.length; i+=4) res += parseInt(b.substr(i,4),2).toString(16).toUpperCase();
             return res;
-        }
+        };
+        const permute = (inp, tbl) => tbl.map(p => inp[p-1]).join('');
+        const xor = (a, b) => a.split('').map((bit, i) => bit === b[i] ? '0' : '1').join('');
 
-        function generateDES() {
-            const K_hex = document.getElementById('keyK').value.trim().toUpperCase();
-            const M_hex = document.getElementById('textM').value.trim().toUpperCase();
-            if(K_hex.length !== 16 || M_hex.length !== 16) { alert("Vui lòng nhập đủ 16 ký tự Hex!"); return; }
+        function solveDES() {
+            const K_hex = document.getElementById('keyK').value.trim();
+            const M_hex = document.getElementById('textM').value.trim();
+            if(!K_hex || !M_hex) return alert("Nhập K và M đi Việt ơi!");
+
+            document.getElementById('placeholder').classList.add('hidden');
+            document.getElementById('outputArea').classList.remove('hidden');
 
             const K_bin = hex2bin(K_hex);
             const M_bin = hex2bin(M_hex);
+            let out = "";
 
-            let out = `PHẦN 1: SINH KHÓA Ki từ khóa K\n`;
-            // Bài 1
-            let pc1 = permute(K_bin, PC1);
-            let C0 = pc1.substr(0, 28);
-            let D0 = pc1.substr(28, 28);
-            out += `1. Tính hoán vị PC1:\n   Input: K = ${K_hex}\n   Output: C0 = ${bin2hex(C0)}, D0 = ${bin2hex(D0)}\n\n`;
+            // --- PHẦN 1: SINH KHÓA ---
+            out += `<div class="section-header">PHẦN 1: SINH KHÓA Ki TỪ KHÓA K</div>`;
+            const pc1 = permute(K_bin, PC1);
+            let C = pc1.substr(0, 28);
+            let D = pc1.substr(28, 28);
+            out += `<div class="p-4 border-b">
+                        <span class="step-label">1. Tính hoán vị PC1:</span>
+                        Input: K = ${K_hex}<br>Output: C0 = ${bin2hex(C)}, D0 = ${bin2hex(D)}
+                    </div>`;
 
-            // Bài 2 & 3 (Vòng 1)
-            let shift = SHIFTS[0];
-            let C1 = C0.substr(shift) + C0.substr(0, shift);
-            let D1 = D0.substr(shift) + D0.substr(0, shift);
-            out += `2. Tính dịch vòng C1, D1 (s1=${shift}):\n   Output: C1 = ${bin2hex(C1)}, D1 = ${bin2hex(D1)}\n`;
+            let keys = [];
+            let currentC = C, currentD = D;
 
-            let K1_bin = permute(C1 + D1, PC2);
-            out += `3. Tính khóa K1 (PC2):\n   Output: K1 = ${bin2hex(K1_bin)}\n\n`;
-
-            out += `PHẦN 2: MÃ HÓA\n`;
-            // Bài 4
-            let ip = permute(M_bin, IP);
-            let L0 = ip.substr(0, 32);
-            let R0 = ip.substr(32, 32);
-            out += `4. Tính hoán vị IP đối với M:\n   Input: M = ${M_hex}\n   Output: L0 = ${bin2hex(L0)}, R0 = ${bin2hex(R0)}\n\n`;
-
-            out += `========== CHI TIẾT VÒNG LẶP THỨ NHẤT ==========\n`;
-            // Bài 5
-            let ER0 = permute(R0, E);
-            out += `5. Hàm mở rộng E[R0]:\n   Output: ER0 = ${bin2hex(ER0)}\n`;
-
-            // Bài 6
-            let A = xor(ER0, K1_bin);
-            out += `6. XOR ER0 với K1:\n   Output: A = ${bin2hex(A)}\n`;
-
-            // Bài 7
-            let B = "";
-            for(let i=0; i<8; i++) {
-                let chunk = A.substr(i*6, 6);
-                let row = parseInt(chunk[0] + chunk[5], 2);
-                let col = parseInt(chunk.substr(1, 4), 2);
-                B += S_BOXES[i][row][col].toString(2).padStart(4, '0');
-            }
-            out += `7. Phép thế S-box:\n   Output: B = ${bin2hex(B)}\n`;
-
-            // Bài 8
-            let F = permute(B, P);
-            out += `8. Hoán vị P đối với B:\n   Output: F = ${bin2hex(F)}\n\n`;
-
-            // Bài 9
-            let L1 = R0;
-            let R1 = xor(L0, F);
-            out += `========= THỰC HIỆN VÒNG LẶP THỨ NHẤT =========\n`;
-            out += `9. Kết quả Vòng 1:\n   Output: L1 = ${bin2hex(L1)}; R1 = ${bin2hex(R1)}\n\n`;
-
-            // Vòng 2-16 (Chạy ngầm để lấy L16, R16)
-            let currL = L1, currR = R1, currC = C1, currD = D1;
-            for(let i=1; i<16; i++) {
+            for(let i=0; i<16; i++) {
                 let s = SHIFTS[i];
-                currC = currC.substr(s) + currC.substr(0, s);
-                currD = currD.substr(s) + currD.substr(0, s);
-                let Ki = permute(currC + currD, PC2);
-                
-                let nextL = currR;
-                let er = permute(currR, E);
-                let a = xor(er, Ki);
-                let b = "";
-                for(let j=0; j<8; j++) {
-                    let chunk = a.substr(j*6, 6);
-                    let r = parseInt(chunk[0] + chunk[5], 2);
-                    let c = parseInt(chunk.substr(1, 4), 2);
-                    b += S_BOXES[j][r][c].toString(2).padStart(4, '0');
+                currentC = currentC.substr(s) + currentC.substr(0, s);
+                currentD = currentD.substr(s) + currentD.substr(0, s);
+                let Ki = permute(currentC + currentD, PC2);
+                keys.push(Ki);
+
+                if(i === 0) { // In chi tiết bước 2, 3 cho vòng 1
+                    out += `<div class="p-4 border-b">
+                                <span class="step-label">2. Tính dịch vòng C1, D1 (s1=1):</span>
+                                Output: C1 = ${bin2hex(currentC)}, D1 = ${bin2hex(currentD)}
+                            </div>`;
+                    out += `<div class="p-4 border-b text-red-600 font-bold">
+                                <span class="step-label">3. Tính khóa K1 (PC2):</span>
+                                Output: K1 = ${bin2hex(Ki)}
+                            </div>`;
                 }
-                let f = permute(b, P);
-                currR = xor(currL, f);
-                currL = nextL;
             }
 
-            // Bài 11
-            let preOutput = currR + currL; // Ghép R16L16
-            let FinalC = permute(preOutput, IP_INV);
-            out += `========= KẾT THÚC VÒNG LẶP THỨ 16 =========\n`;
-            out += `11. Hoán vị cuối cùng IP-1:\n`;
-            out += `    Input: L16 = ${bin2hex(currL)}, R16 = ${bin2hex(currR)}\n`;
-            out += `    Output: C = ${bin2hex(FinalC)}\n`;
-            out += `\n============ KẾT QUẢ MÃ HÓA ============`;
+            // --- PHẦN 2: MÃ HÓA ---
+            out += `<div class="section-header">PHẦN 2: MÃ HÓA</div>`;
+            const ip = permute(M_bin, IP);
+            let L = ip.substr(0, 32);
+            let R = ip.substr(32, 32);
+            out += `<div class="p-4 border-b">
+                        <span class="step-label">4. Tính hoán vị IP đối với M:</span>
+                        Input: M = ${M_hex}<br>Output: L0 = ${bin2hex(L)}, R0 = ${bin2hex(R)}
+                    </div>`;
 
-            document.getElementById('report').innerText = out;
+            // CHẠY 16 VÒNG
+            for(let i=0; i<16; i++) {
+                let prevL = L;
+                let prevR = R;
+                
+                // Mở rộng E
+                let ER = permute(prevR, E);
+                // XOR với Ki
+                let A = xor(ER, keys[i]);
+                // S-box
+                let B = "";
+                for(let j=0; j<8; j++) {
+                    let chunk = A.substr(j*6, 6);
+                    let row = parseInt(chunk[0] + chunk[5], 2);
+                    let col = parseInt(chunk.substr(1, 4), 2);
+                    B += S_BOXES[j][row][col].toString(2).padStart(4, '0');
+                }
+                // P
+                let F = permute(B, P);
+                
+                // Kết quả vòng
+                L = prevR;
+                R = xor(prevL, F);
+
+                // HIỂN THỊ CHI TIẾT
+                out += `<div class="round-container">
+                    <div class="round-header italic">========== CHI TIẾT VÒNG LẶP THỨ ${i+1} ==========</div>
+                    <div class="step-item"><span class="step-label">5. Hàm mở rộng E[R${i}]:</span>Output: ER${i} = ${bin2hex(ER)}</div>
+                    <div class="step-item"><span class="step-label">6. XOR ER${i} với K${i+1}:</span>Output: A = ${bin2hex(A)}</div>
+                    <div class="step-item"><span class="step-label">7. Phép thế S-box:</span>Output: B = ${bin2hex(B)}</div>
+                    <div class="step-item"><span class="step-label">8. Hoán vị P đối với B:</span>Output: F = ${bin2hex(F)}</div>
+                    <div class="bg-blue-50 p-3"><span class="step-label text-blue-700 uppercase">========= THỰC HIỆN VÒNG LẶP THỨ ${i+1} =========</span>
+                        <span class="font-bold">9. Kết quả Vòng ${i+1}:</span><br>Output: L${i+1} = ${bin2hex(L)}; R${i+1} = ${bin2hex(R)}
+                    </div>
+                </div>`;
+            }
+
+            // --- KẾT THÚC ---
+            const preOutput = R + L; // R16L16
+            const FinalC = permute(preOutput, IP_INV);
+            out += `<div class="section-header">PHẦN 3: KẾT THÚC</div>`;
+            out += `<div class="p-4 border-b">
+                        <span class="step-label italic uppercase">========= KẾT THÚC VÒNG LẶP THỨ 16 =========</span>
+                        <span class="step-label">11. Hoán vị cuối cùng IP-1:</span>
+                        Input: L16 = ${bin2hex(L)}, R16 = ${bin2hex(R)} (R16L16 hoán vị)<br>
+                        Output: C = ${bin2hex(FinalC)}
+                    </div>`;
+
+            out += `<div class="final-result">
+                        <div class="text-xs uppercase font-black opacity-80 mb-1">============ KẾT QUẢ MÃ HÓA ============</div>
+                        <div class="text-3xl font-bold tracking-tighter">${bin2hex(FinalC)}</div>
+                    </div>`;
+
+            document.getElementById('solverContent').innerHTML = out;
+            document.getElementById('outputArea').scrollIntoView();
         }
     </script>
 </body>
