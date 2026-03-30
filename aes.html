@@ -4,53 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>AES-128 Mobile Friendly</title>
+    <title>AES-128 Dual Module (Key & State)</title>
     <style>
-        /* Đảm bảo các chuỗi Hex dài tự ngắt dòng trên màn hình nhỏ */
-        .hex-break {
-            word-break: break-all;
-            font-family: 'ui-monospace', 'SFMono-Regular', Menlo, Monaco, Consolas, monospace;
-        }
+        .hex-font { font-family: 'ui-monospace', monospace; word-break: break-all; }
+        .tab-active { border-bottom: 2px solid #3b82f6; color: #3b82f6; }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-200 p-3 md:p-6 pb-20">
-    <div class="max-w-3xl mx-auto space-y-4">
-        <a href="index.html" class="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors text-sm">
-            <span>&larr;</span> Quay lại Menu
-        </a>
-
-        <header class="text-center py-2">
-            <h1 class="text-xl md:text-2xl font-black text-blue-500 uppercase italic tracking-tighter">
-                AES-128 CALCULATOR
-            </h1>
-            <p class="text-[10px] text-slate-500 uppercase tracking-[0.2em]">Full 10 Rounds - Detailed Steps</p>
+<body class="bg-slate-900 text-slate-200 p-4 md:p-8">
+    <div class="max-w-6xl mx-auto space-y-6">
+        <header class="text-center border-b border-slate-800 pb-4">
+            <h1 class="text-3xl font-black text-blue-500 italic tracking-tighter">AES-128 TOOLBOX</h1>
+            <p class="text-xs text-slate-500 uppercase tracking-widest mt-2">Phân tách Module: Key Expansion & State Transformation</p>
         </header>
-        
-        <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow-2xl space-y-4">
-            <div class="space-y-4">
-                <div class="group">
-                    <label class="block text-[10px] text-slate-500 uppercase mb-1 ml-1 tracking-widest group-focus-within:text-blue-400 transition-colors">Thông điệp M (32 Hex)</label>
-                    <input id="inpM" 
-                           class="w-full bg-slate-900 p-3 rounded-xl border border-slate-700 text-blue-300 uppercase focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all text-sm" 
-                           placeholder="VD: 0123456789ABCDEFFEDCBA9876543210"
-                           value="0123456789ABCDEFFEDCBA9876543210">
-                </div>
-                <div class="group">
-                    <label class="block text-[10px] text-slate-500 uppercase mb-1 ml-1 tracking-widest group-focus-within:text-emerald-400 transition-colors">Khóa chính K (32 Hex)</label>
-                    <input id="inpK" 
-                           class="w-full bg-slate-900 p-3 rounded-xl border border-slate-700 text-emerald-300 uppercase focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-all text-sm" 
-                           placeholder="VD: 0F1571C947D9E8590CB7ADD6AF7F6798"
-                           value="0F1571C947D9E8590CB7ADD6AF7F6798">
-                </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-xl">
+                <label class="block text-[10px] text-blue-400 uppercase font-bold mb-2 ml-1">Thông điệp M (32 Hex)</label>
+                <input id="inpM" value="0123456789ABCDEFFEDCBA9876543210" class="w-full bg-slate-900 p-3 rounded-xl border border-slate-700 text-blue-300 uppercase outline-none focus:border-blue-500 transition-all">
             </div>
-            <button onclick="runAES()" class="w-full bg-blue-600 hover:bg-blue-500 active:scale-[0.98] text-white py-4 rounded-xl font-bold transition-all shadow-lg shadow-blue-900/20 uppercase text-xs tracking-widest">
-                Bắt đầu tính toán
-            </button>
+            <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-xl">
+                <label class="block text-[10px] text-emerald-400 uppercase font-bold mb-2 ml-1">Khóa chính K (32 Hex)</label>
+                <input id="inpK" value="0F1571C947D9E8590CB7ADD6AF7F6798" class="w-full bg-slate-900 p-3 rounded-xl border border-slate-700 text-emerald-300 uppercase outline-none focus:border-emerald-500 transition-all">
+            </div>
         </div>
 
-        <div id="output" class="space-y-4">
-            <div class="text-center py-10 text-slate-600 text-sm italic">
-                Nhập dữ liệu và nhấn nút để xem chi tiết...
+        <button onclick="executeAES()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl shadow-lg transition-transform active:scale-95 uppercase text-sm tracking-widest">
+            Phát triển khóa & Chạy thuật toán
+        </button>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="space-y-4">
+                <h2 class="text-lg font-bold text-emerald-400 flex items-center gap-2">
+                    <span class="w-2 h-2 bg-emerald-500 rounded-full"></span> MODULE 1: KEY EXPANSION
+                </h2>
+                <div id="keyOutput" class="space-y-2"></div>
+            </div>
+
+            <div class="space-y-4">
+                <h2 class="text-lg font-bold text-blue-400 flex items-center gap-2">
+                    <span class="w-2 h-2 bg-blue-500 rounded-full"></span> MODULE 2: STATE PROCESS
+                </h2>
+                <div id="stateOutput" class="space-y-4"></div>
             </div>
         </div>
     </div>
@@ -59,6 +53,7 @@
         const SBOX = [0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67, 0x2b, 0xfe, 0xd7, 0xab, 0x76, 0xca, 0x82, 0xc9, 0x7d, 0xfa, 0x59, 0x47, 0xf0, 0xad, 0xd4, 0xa2, 0xaf, 0x9c, 0xa4, 0x72, 0xc0, 0xb7, 0xfd, 0x93, 0x26, 0x36, 0x3f, 0xf7, 0xcc, 0x34, 0xa5, 0xe5, 0xf1, 0x71, 0xd8, 0x31, 0x15, 0x04, 0xc7, 0x23, 0xc3, 0x18, 0x96, 0x05, 0x9a, 0x07, 0x12, 0x80, 0xe2, 0xeb, 0x27, 0xb2, 0x75, 0x09, 0x83, 0x2c, 0x1a, 0x1b, 0x6e, 0x5a, 0xa0, 0x52, 0x3b, 0xd6, 0xb3, 0x29, 0xe3, 0x2f, 0x84, 0x53, 0xd1, 0x00, 0xed, 0x20, 0xfc, 0xb1, 0x5b, 0x6a, 0xcb, 0xbe, 0x39, 0x4a, 0x4c, 0x58, 0xcf, 0xd0, 0xef, 0xaa, 0xfb, 0x43, 0x4d, 0x33, 0x85, 0x45, 0xf9, 0x02, 0x7f, 0x50, 0x3c, 0x9f, 0xa8, 0x51, 0xa3, 0x40, 0x8f, 0x92, 0x9d, 0x38, 0xf5, 0xbc, 0xb6, 0xda, 0x21, 0x10, 0xff, 0xf3, 0xd2, 0xcd, 0x0c, 0x13, 0xec, 0x5f, 0x97, 0x44, 0x17, 0xc4, 0xa7, 0x7e, 0x3d, 0x64, 0x5d, 0x19, 0x73, 0x60, 0x81, 0x4f, 0xdc, 0x22, 0x2a, 0x90, 0x88, 0x46, 0xee, 0xb8, 0x14, 0xde, 0x5e, 0x0b, 0xdb, 0xe0, 0x32, 0x3a, 0x0a, 0x49, 0x06, 0x24, 0x5c, 0xc2, 0xd3, 0xac, 0x62, 0x91, 0x95, 0xe4, 0x79, 0xe7, 0xc8, 0x37, 0x6d, 0x8d, 0xd5, 0x4e, 0xa9, 0x6c, 0x56, 0xf4, 0xea, 0x65, 0x7a, 0xae, 0x08, 0xba, 0x78, 0x25, 0x2e, 0x1c, 0xa6, 0xb4, 0xc6, 0xe8, 0xdd, 0x74, 0x1f, 0x4b, 0xbd, 0x8b, 0x8a, 0x70, 0x3e, 0xb5, 0x66, 0x48, 0x03, 0xf6, 0x0e, 0x61, 0x35, 0x57, 0xb9, 0x86, 0xc1, 0x1d, 0x9e, 0xe1, 0xf8, 0x98, 0x11, 0x69, 0xd9, 0x8e, 0x94, 0x9b, 0x1e, 0x87, 0xe9, 0xce, 0x55, 0x28, 0xdf, 0x8c, 0xa1, 0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0, 0x54, 0xbb, 0x16];
         const RCON = [0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1B, 0x36];
 
+        // --- HÀM TIỆN ÍCH ---
         function xor(a, b) {
             let res = "";
             for (let i = 0; i < a.length; i++) res += (parseInt(a[i], 16) ^ parseInt(b[i], 16)).toString(16).toUpperCase();
@@ -80,8 +75,7 @@
             let p = 0;
             for (let i = 0; i < 8; i++) {
                 if (b & 1) p ^= a;
-                let hi = a & 0x80;
-                a <<= 1;
+                let hi = a & 0x80; a <<= 1;
                 if (hi) a ^= 0x1b;
                 b >>= 1;
             }
@@ -101,21 +95,17 @@
             return res.map(x => x.toString(16).padStart(2, '0').toUpperCase()).join('');
         }
 
-        function runAES() {
+        // --- THỰC THI CHÍNH ---
+        function executeAES() {
             let M = document.getElementById('inpM').value.replace(/\s/g, '').toUpperCase();
             let K = document.getElementById('inpK').value.replace(/\s/g, '').toUpperCase();
-            
-            if(M.length !== 32 || K.length !== 32) {
-                alert("Vui lòng nhập đủ 32 ký tự Hex (128-bit)!");
-                return;
-            }
+            if(M.length !== 32 || K.length !== 32) return alert("Nhập đủ 32 ký tự Hex!");
 
-            let outArea = document.getElementById('output');
-            outArea.innerHTML = "";
-
-            // --- Key Expansion ---
+            // 1. KEY EXPANSION MODULE
             let keys = [K];
-            for(let i=1; i<=10; i++){
+            let keyHtml = `<div class="bg-emerald-900/20 p-3 rounded-lg border border-emerald-800 hex-font text-xs"><span class="text-emerald-500 font-bold">K₀ (Gốc):</span> ${K}</div>`;
+            
+            for(let i=1; i<=10; i++) {
                 let prevW = [keys[i-1].substr(0,8), keys[i-1].substr(8,8), keys[i-1].substr(16,8), keys[i-1].substr(24,8)];
                 let rw = prevW[3].substr(2) + prevW[3].substr(0,2);
                 let sw = ""; for(let j=0; j<8; j+=2) sw += SBOX[parseInt(rw.substr(j, 2), 16)].toString(16).padStart(2,'0').toUpperCase();
@@ -127,13 +117,16 @@
                 nextW[2] = xor(nextW[1], prevW[2]);
                 nextW[3] = xor(nextW[2], prevW[3]);
                 keys.push(nextW.join(''));
+                keyHtml += `<div class="bg-slate-800/50 p-3 rounded-lg border border-slate-700 hex-font text-xs"><span class="text-emerald-500 font-bold">K${i}:</span> ${keys[i]}</div>`;
             }
+            document.getElementById('keyOutput').innerHTML = keyHtml;
 
+            // 2. STATE TRANSFORMATION MODULE
             let state = xor(M, K);
-            let html = `
-                <div class="bg-blue-900/30 border border-blue-500/50 p-4 rounded-xl shadow-lg">
-                    <p class="text-[10px] uppercase font-bold text-blue-400 mb-2 tracking-[0.2em]">Khởi tạo (Round 0)</p>
-                    <div class="hex-break font-bold text-yellow-400 text-sm">AddRoundKey(M, K₀): ${state}</div>
+            let stateHtml = `
+                <div class="p-4 bg-blue-900/20 border border-blue-800 rounded-xl">
+                    <p class="text-[10px] uppercase text-blue-400 font-bold mb-1">Round 0: Initial AddRoundKey</p>
+                    <div class="hex-font text-sm text-yellow-400">${state}</div>
                 </div>`;
 
             for(let i=1; i<=10; i++) {
@@ -141,44 +134,21 @@
                 let sr = shiftRows(sb);
                 let mc = (i < 10) ? mixColumns(sr) : null;
                 
-                html += `
-                <div class="bg-slate-800 rounded-2xl border-l-4 border-blue-500 shadow-xl overflow-hidden">
-                    <div class="bg-slate-700/30 px-4 py-2 flex justify-between items-center border-b border-slate-700">
-                        <span class="font-black text-blue-400 uppercase text-xs italic">Vòng ${i}</span>
-                    </div>
-                    
-                    <div class="p-4 space-y-3 text-[13px]">
-                        <div>
-                            <span class="block text-[10px] text-slate-500 uppercase font-bold mb-1">1. SubBytes:</span>
-                            <div class="hex-break text-slate-300 leading-relaxed bg-black/20 p-2 rounded-lg border border-slate-700/50">${sb}</div>
+                stateHtml += `
+                    <div class="bg-slate-800 p-4 rounded-xl border-l-2 border-blue-500 space-y-2 shadow-md">
+                        <p class="text-[10px] text-slate-500 uppercase font-bold italic">Vòng ${i}</p>
+                        <div class="text-[11px] grid grid-cols-1 gap-2">
+                            <div><span class="text-slate-500">SubBytes:</span> <span class="hex-font text-slate-300">${sb}</span></div>
+                            <div><span class="text-slate-500">ShiftRows:</span> <span class="hex-font text-slate-300">${sr}</span></div>
+                            ${i < 10 ? `<div><span class="text-slate-500">MixColumns:</span> <span class="hex-font text-slate-300">${mc}</span></div>` : ''}
                         </div>
-                        <div>
-                            <span class="block text-[10px] text-slate-500 uppercase font-bold mb-1">2. ShiftRows:</span>
-                            <div class="hex-break text-slate-300 leading-relaxed bg-black/20 p-2 rounded-lg border border-slate-700/50">${sr}</div>
-                        </div>`;
-
-                if(i < 10) {
-                    state = xor(mc, keys[i]);
-                    html += `
-                        <div>
-                            <span class="block text-[10px] text-slate-500 uppercase font-bold mb-1">3. MixColumns:</span>
-                            <div class="hex-break text-slate-300 leading-relaxed bg-black/20 p-2 rounded-lg border border-slate-700/50">${mc}</div>
+                        <div class="pt-2 border-t border-slate-700">
+                            <span class="text-[10px] text-blue-400 font-bold uppercase">AddRoundKey (K${i}):</span>
+                            <div class="hex-font text-blue-300 text-xs">${state = (i < 10) ? xor(mc, keys[i]) : xor(sr, keys[10])}</div>
                         </div>
-                        <div class="mt-2 pt-2 border-t border-slate-700">
-                            <span class="text-[10px] text-blue-400 uppercase font-bold">AddRoundKey (K${i}):</span>
-                            <div class="hex-break font-bold text-blue-300 mt-1">${state}</div>
-                        </div>`;
-                } else {
-                    state = xor(sr, keys[10]);
-                    html += `
-                        <div class="mt-4 p-4 bg-emerald-900/40 border-2 border-emerald-500 rounded-xl text-center shadow-[0_0_20px_rgba(16,185,129,0.1)]">
-                            <p class="text-[10px] uppercase font-black text-emerald-400 mb-2">Mã Ciphertext cuối cùng</p>
-                            <div class="hex-break text-lg font-black text-white tracking-widest leading-tight uppercase">${state}</div>
-                        </div>`;
-                }
-                html += `</div></div>`;
+                    </div>`;
             }
-            outArea.innerHTML = html;
+            document.getElementById('stateOutput').innerHTML = stateHtml;
         }
     </script>
 </body>
