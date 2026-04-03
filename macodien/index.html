@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body { font-family: 'Inter', sans-serif; background-color: #020617; }
         .mono { font-family: 'JetBrains Mono', monospace; }
         .tab-active { background: #3b82f6; color: white; border-color: #3b82f6; box-shadow: 0 4px 15px -5px #3b82f6; }
         .alpha-box { min-width: 35px; border: 1px solid #1e293b; text-align: center; border-radius: 6px; overflow: hidden; }
@@ -16,13 +16,13 @@
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-200 min-h-screen p-4 md:p-8">
+<body class="text-slate-200 min-h-screen p-4 md:p-8">
 
     <div class="max-w-6xl mx-auto space-y-8">
         <header class="flex justify-between items-center border-b border-slate-800 pb-6">
             <div>
                 <h1 class="text-3xl font-black italic tracking-tighter text-blue-500 uppercase">Kido <span class="text-white">Classic Crypto</span></h1>
-                <p class="text-[10px] text-slate-500 uppercase font-bold tracking-[0.3em] mt-1">Hệ thống mô phỏng & giải bài tập 10 nhóm</p>
+                <p class="text-[10px] text-slate-500 uppercase font-bold tracking-[0.3em] mt-1">Phòng thí nghiệm mô phỏng mật mã 2026</p>
             </div>
             <a href="../index.html" class="bg-slate-900 px-5 py-2.5 rounded-xl text-[10px] font-black hover:bg-white hover:text-black transition uppercase border border-slate-800">Quay lại Hub</a>
         </header>
@@ -31,7 +31,7 @@
             <button onclick="setMode('caesar')" id="nav-caesar" class="nav-btn px-6 py-2.5 rounded-full border border-slate-800 text-[10px] font-black uppercase transition-all hover:border-blue-500">01. Caesar</button>
             <button onclick="setMode('vigenere')" id="nav-vigenere" class="nav-btn px-6 py-2.5 rounded-full border border-slate-800 text-[10px] font-black uppercase transition-all hover:border-blue-500">02. Vigenere</button>
             <button onclick="setMode('playfair')" id="nav-playfair" class="nav-btn px-6 py-2.5 rounded-full border border-slate-800 text-[10px] font-black uppercase transition-all hover:border-blue-500">03. Playfair</button>
-            <button onclick="setMode('trans')" id="nav-trans" class="nav-btn px-6 py-2.5 rounded-full border border-slate-800 text-[10px] font-black uppercase transition-all hover:border-blue-500">04. Hoán vị</button>
+            <button onclick="setMode('trans')" id="nav-trans" class="nav-btn px-6 py-2.5 rounded-full border border-slate-800 text-[10px] font-black uppercase transition-all hover:border-blue-500">04. Hoán vị (Zig-Zag)</button>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -39,17 +39,16 @@
             <div class="bg-slate-900/40 p-8 rounded-[32px] border border-slate-800 shadow-2xl h-fit space-y-6">
                 <div class="flex items-center gap-3">
                     <div id="mode-icon" class="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center text-xl text-blue-400">⚡</div>
-                    <h2 id="mode-title" class="text-xl font-black uppercase italic">Cấu hình thuật toán</h2>
+                    <h2 id="mode-title" class="text-xl font-black uppercase italic text-white tracking-tight">Cấu hình thuật toán</h2>
                 </div>
 
                 <div class="space-y-5">
                     <div>
-                        <label class="text-[10px] font-black uppercase text-slate-500 mb-2 block">Bản rõ (M) / Plaintext</label>
-                        <input id="inM" type="text" placeholder="VÍ DỤ: HELLOWORLD" class="w-full bg-slate-950 p-4 rounded-2xl border border-slate-800 focus:border-blue-500 outline-none uppercase font-bold text-blue-400 mono tracking-widest transition-all">
+                        <label class="text-[10px] font-black uppercase text-slate-500 mb-2 block tracking-widest">Bản rõ (M) / Plaintext</label>
+                        <input id="inM" type="text" placeholder="VÍ DỤ: KIDOSTUDIO" class="w-full bg-slate-950 p-4 rounded-2xl border border-slate-800 focus:border-blue-500 outline-none uppercase font-bold text-blue-400 mono tracking-widest transition-all">
                     </div>
                     
-                    <div id="key-container" class="space-y-4">
-                        </div>
+                    <div id="key-container" class="space-y-4"></div>
 
                     <button onclick="execute()" class="w-full bg-blue-600 hover:bg-blue-500 py-5 rounded-2xl font-black uppercase tracking-[0.2em] text-xs transition-all shadow-lg shadow-blue-600/30 active:scale-95 mt-4">
                         Bắt đầu mô phỏng
@@ -63,17 +62,16 @@
                     <div id="resC" class="mono text-3xl font-black text-white break-all uppercase tracking-tight">---</div>
                 </div>
 
-                <div class="bg-slate-900/60 p-8 rounded-[32px] border border-slate-800 min-h-[400px]">
+                <div class="bg-slate-900/60 p-8 rounded-[32px] border border-slate-800 min-h-[450px]">
                     <h3 class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-6 flex items-center gap-2">
                         <span class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
-                        Phân tích dữ liệu chi tiết
+                        Phân tích dữ liệu chi tiết (Step-by-step)
                     </h3>
                     <div id="resSteps" class="space-y-4 text-[13px] text-slate-400 mono max-h-[600px] overflow-y-auto pr-3">
-                        <p class="italic text-slate-600">Chọn thuật toán và bấm nút mô phỏng để xem kết quả...</p>
+                        <p class="italic text-slate-600 text-center py-10">Nhập dữ liệu và nhấn "Bắt đầu" để xem phân tích...</p>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -86,13 +84,13 @@
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('tab-active'));
             document.getElementById('nav-' + mode).classList.add('tab-active');
             
-            const titles = { caesar: "Mã Caesar", vigenere: "Mã Vigenere", playfair: "Mã Playfair", trans: "Mã Hoán vị" };
+            const titles = { caesar: "Mã Caesar", vigenere: "Mã Vigenere", playfair: "Mã Playfair", trans: "Mã Hoán vị Zig-Zag" };
             document.getElementById('mode-title').innerText = titles[mode];
 
             const keyBox = document.getElementById('key-container');
             if(mode === 'caesar') {
                 keyBox.innerHTML = `<label class="text-[10px] font-black uppercase text-slate-500 mb-2 block">Khóa dịch chuyển (K)</label>
-                                    <input id="inK" type="number" value="3" min="0" max="25" class="w-full bg-slate-950 p-4 rounded-2xl border border-slate-800 outline-none font-bold text-white">`;
+                                    <input id="inK" type="number" value="3" min="0" class="w-full bg-slate-950 p-4 rounded-2xl border border-slate-800 outline-none font-bold text-white">`;
             } else if(mode === 'vigenere') {
                 keyBox.innerHTML = `<label class="text-[10px] font-black uppercase text-slate-500 mb-2 block">Từ khóa (Key String)</label>
                                     <input id="inK" type="text" placeholder="VÍ DỤ: KIDO" class="w-full bg-slate-950 p-4 rounded-2xl border border-slate-800 outline-none uppercase font-bold text-white mb-4">
@@ -101,8 +99,8 @@
                                         <option value="auto">Chế độ: Khóa tự động (Autokey)</option>
                                     </select>`;
             } else if(mode === 'trans') {
-                keyBox.innerHTML = `<label class="text-[10px] font-black uppercase text-slate-500 mb-2 block">Số cột (K)</label>
-                                    <input id="inK" type="number" value="4" class="w-full bg-slate-950 p-4 rounded-2xl border border-slate-800 outline-none font-bold text-white">`;
+                keyBox.innerHTML = `<label class="text-[10px] font-black uppercase text-slate-500 mb-2 block">Số hàng (Rails - Độ cao ZigZag)</label>
+                                    <input id="inK" type="number" value="3" min="2" class="w-full bg-slate-950 p-4 rounded-2xl border border-slate-800 outline-none font-bold text-white">`;
             } else if(mode === 'playfair') {
                 keyBox.innerHTML = `<label class="text-[10px] font-black uppercase text-slate-500 mb-2 block">Từ khóa ma trận (Key Word)</label>
                                     <input id="inK" type="text" placeholder="VÍ DỤ: MONARCHY" class="w-full bg-slate-950 p-4 rounded-2xl border border-slate-800 outline-none uppercase font-bold text-white">`;
@@ -118,125 +116,98 @@
 
             if(!m) return alert("Vui lòng nhập Plaintext!");
 
+            // --- CAESAR ---
             if(currentMode === 'caesar') {
                 const shift = parseInt(kValue) % 26 || 0;
-                
-                // 1. VẼ BẢNG ĐỐI CHIẾU FULL A-Z
                 let alphaRow = "";
                 for(let i=0; i<26; i++) {
-                    alphaRow += `
-                    <div class="alpha-box">
-                        <div class="bg-slate-800 text-[9px] py-1 font-bold text-slate-500">${ALPHA[i]}</div>
-                        <div class="bg-blue-900/30 text-xs py-1.5 font-black text-blue-400 border-t border-slate-800">${ALPHA[(i+shift)%26]}</div>
-                    </div>`;
+                    alphaRow += `<div class="alpha-box"><div class="bg-slate-800 text-[9px] py-1 font-bold text-slate-500">${ALPHA[i]}</div><div class="bg-blue-900/30 text-xs py-1.5 font-black text-blue-400 border-t border-slate-800">${ALPHA[(i+shift)%26]}</div></div>`;
                 }
-
-                steps += `
-                <div class="mb-8">
-                    <p class="text-[10px] font-black text-blue-500 mb-3 uppercase tracking-widest">Bảng đối chiếu Caesar đầy đủ (K=${shift}):</p>
-                    <div class="flex flex-wrap gap-1">
-                        ${alphaRow}
-                    </div>
-                </div>`;
-
-                // 2. CHẠY TỪNG BƯỚC
-                steps += `<p class="text-[10px] font-black text-slate-500 mb-3 uppercase tracking-widest">Quá trình thay thế ký tự:</p>`;
+                steps += `<div class="mb-8"><p class="text-[10px] font-black text-blue-500 mb-3 uppercase tracking-widest underline">Bảng đối chiếu Caesar:</p><div class="flex flex-wrap gap-1">${alphaRow}</div></div>`;
                 for(let i=0; i<m.length; i++) {
                     let pIdx = ALPHA.indexOf(m[i]);
                     let cIdx = (pIdx + shift) % 26;
                     result += ALPHA[cIdx];
-                    steps += `
-                    <div class="step-item flex justify-between items-center">
-                        <div><span class="text-slate-500">M[${i}] = </span> <b class="text-white text-lg">${m[i]}</b></div>
-                        <div class="text-blue-500 font-black">→</div>
-                        <div><span class="text-slate-500">C[${i}] = </span> <b class="text-blue-400 text-lg">${ALPHA[cIdx]}</b></div>
-                        <div class="text-[9px] opacity-40">(${pIdx} + ${shift}) mod 26</div>
-                    </div>`;
+                    steps += `<div class="step-item flex justify-between items-center"><div><span class="text-slate-500">M[${i}]:</span> <b class="text-white">${m[i]}</b></div><div class="text-blue-500 font-black">→</div><div><span class="text-slate-500">C[${i}]:</span> <b class="text-blue-400">${ALPHA[cIdx]}</b></div></div>`;
                 }
             } 
             
+            // --- VIGENERE ---
             else if(currentMode === 'vigenere') {
                 const type = document.getElementById('vType').value;
                 let fullKey = kValue.replace(/[^A-Z]/g, '');
                 if(!fullKey) return alert("Vui lòng nhập từ khóa!");
-
                 if(type === 'loop') {
                     while(fullKey.length < m.length) fullKey += fullKey;
                     fullKey = fullKey.substring(0, m.length);
-                    steps += `<p class="mb-4 text-emerald-400 text-[10px] uppercase font-bold">Khóa lặp (Repeating): ${fullKey}</p>`;
                 } else {
                     fullKey = (fullKey + m).substring(0, m.length);
-                    steps += `<p class="mb-4 text-emerald-400 text-[10px] uppercase font-bold">Khóa tự động (Autokey): ${fullKey}</p>`;
                 }
-
+                steps += `<p class="mb-4 text-emerald-400 text-[10px] uppercase font-bold tracking-widest underline">Dòng khóa K: ${fullKey}</p>`;
                 for(let i=0; i<m.length; i++) {
-                    let pIdx = ALPHA.indexOf(m[i]);
-                    let kIdx = ALPHA.indexOf(fullKey[i]);
-                    let cIdx = (pIdx + kIdx) % 26;
+                    let pIdx = ALPHA.indexOf(m[i]), kIdx = ALPHA.indexOf(fullKey[i]), cIdx = (pIdx + kIdx) % 26;
                     result += ALPHA[cIdx];
-                    steps += `
-                    <div class="step-item">
-                        <div class="flex justify-between font-bold">
-                            <span>P: ${m[i]} (${pIdx}) + K: ${fullKey[i]} (${kIdx})</span>
-                            <span class="text-blue-400">→ ${ALPHA[cIdx]}</span>
-                        </div>
-                    </div>`;
+                    steps += `<div class="step-item flex justify-between"><span>${m[i]}(${pIdx}) + Key ${fullKey[i]}(${kIdx})</span><b class="text-blue-400">→ ${ALPHA[cIdx]}</b></div>`;
                 }
             }
 
+            // --- TRANSITION (ZIG-ZAG) ---
             else if(currentMode === 'trans') {
-                const cols = parseInt(kValue) || 1;
-                const rows = Math.ceil(m.length / cols);
-                steps += `<p class="mb-3 text-[10px] font-bold text-blue-400 uppercase">Ma trận hoán vị: ${cols} cột x ${rows} hàng</p>`;
-                steps += `<div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 mb-6 overflow-x-auto">`;
-                steps += `<table class="w-full border-collapse">`;
-                
-                let grid = [];
-                for(let r=0; r<rows; r++) {
-                    steps += `<tr>`;
-                    for(let c=0; c<cols; c++) {
-                        let idx = r * cols + c;
-                        let char = m[idx] || '-';
-                        steps += `<td class="border border-slate-800 p-3 text-center font-bold ${char !== '-' ? 'text-blue-400' : 'text-slate-800'}">${char}</td>`;
-                    }
-                    steps += `</tr>`;
+                const rails = parseInt(kValue) || 3;
+                if(rails < 2) return alert("Số hàng >= 2!");
+                let fence = Array.from({ length: rails }, () => Array(m.length).fill('.'));
+                let rail = 0, dir = 1;
+                for(let i=0; i<m.length; i++) {
+                    fence[rail][i] = m[i];
+                    rail += dir;
+                    if(rail === 0 || rail === rails-1) dir *= -1;
                 }
-                steps += `</table></div>`;
-
-                steps += `<p class="text-[10px] font-bold text-slate-500 uppercase mb-3 underline">Đọc dữ liệu theo từng cột:</p>`;
-                for(let c=0; c<cols; c++) {
-                    let colStr = "";
-                    for(let r=0; r<rows; r++) {
-                        let idx = r * cols + c;
-                        if(idx < m.length) {
-                            result += m[idx];
-                            colStr += m[idx];
-                        }
-                    }
-                    steps += `<div class="step-item">Cột ${c+1}: <b class="text-white">${colStr}</b></div>`;
+                steps += `<p class="mb-4 text-[10px] font-bold text-blue-500 uppercase tracking-widest underline">Ma trận Zig-Zag:</p><div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 mb-6 overflow-x-auto mono text-lg leading-relaxed">`;
+                for(let r=0; r<rails; r++) {
+                    let rowStr = fence[r].map(c => c === '.' ? `<span class="text-slate-900">.</span>` : `<span class="text-blue-400 font-black">${c}</span>`).join(' ');
+                    steps += `<div class="whitespace-nowrap tracking-[0.5em]">${rowStr}</div>`;
+                    for(let c=0; c<m.length; c++) if(fence[r][c] !== '.') result += fence[r][c];
+                }
+                steps += `</div><p class="text-[10px] font-bold text-slate-500 uppercase mb-3 underline">Ghép bản mã theo từng hàng:</p>`;
+                for(let r=0; r<rails; r++) {
+                    let chars = fence[r].filter(c => c !== '.').join('');
+                    steps += `<div class="step-item text-[11px]">Hàng ${r+1}: <b class="text-white ml-2 tracking-[0.2em]">${chars}</b></div>`;
                 }
             }
 
+            // --- PLAYFAIR (FULL LOGIC) ---
             else if(currentMode === 'playfair') {
                 let keyStr = kValue.replace(/[^A-Z]/g, '').replace(/J/g, 'I');
-                let matrixSet = [...new Set(keyStr + "ABCDEFGHIKLMNOPQRSTUVWXYZ")].slice(0, 25);
+                let matrix = [...new Set(keyStr + "ABCDEFGHIKLMNOPQRSTUVWXYZ")].slice(0, 25);
                 
-                steps += `<p class="mb-4 text-[10px] font-bold text-blue-400 uppercase">Ma trận Playfair 5x5 (J chuyển thành I):</p>`;
                 steps += `<div class="grid grid-cols-5 gap-2 w-fit mx-auto bg-slate-950 p-4 rounded-2xl border border-slate-800 mb-6">`;
-                matrixSet.forEach(char => {
-                    steps += `<div class="w-10 h-10 flex items-center justify-center bg-slate-900 border border-slate-800 rounded font-black text-blue-400">${char}</div>`;
-                });
+                matrix.forEach(char => steps += `<div class="w-10 h-10 flex items-center justify-center bg-slate-900 border border-slate-800 rounded font-black text-blue-400">${char}</div>`);
                 steps += `</div>`;
-                
-                steps += `<p class="text-[11px] text-slate-500 italic">Gợi ý: Thuật toán Playfair thực hiện mã hóa theo từng cặp ký tự (Bigrams). Nếu hai ký tự giống nhau hoặc văn bản lẻ, hãy thêm 'X'.</p>`;
-                result = "DEMO_PLAYFAIR"; // Lưu ý: Logic chi tiết playfair rất dài, đây là phần mô phỏng UI ma trận.
+
+                let preparedM = m.replace(/J/g, 'I');
+                let bigrams = [];
+                for (let i = 0; i < preparedM.length; i += 2) {
+                    let a = preparedM[i], b = preparedM[i + 1];
+                    if (!b) { b = 'X'; } else if (a === b) { b = 'X'; i--; }
+                    bigrams.push(a + b);
+                }
+
+                steps += `<p class="text-[10px] font-bold text-slate-500 uppercase mb-3 underline">Phân tích cặp ký tự (Bigrams):</p>`;
+                bigrams.forEach(pair => {
+                    let a = pair[0], b = pair[1], idxA = matrix.indexOf(a), idxB = matrix.indexOf(b);
+                    let r1 = Math.floor(idxA / 5), c1 = idxA % 5, r2 = Math.floor(idxB / 5), c2 = idxB % 5;
+                    let outA, outB;
+                    if (r1 === r2) { outA = matrix[r1 * 5 + (c1 + 1) % 5]; outB = matrix[r2 * 5 + (c2 + 1) % 5]; steps += `<div class="step-item">${pair} → Cùng hàng: <b>${outA}${outB}</b></div>`; }
+                    else if (c1 === c2) { outA = matrix[((r1 + 1) % 5) * 5 + c1]; outB = matrix[((r2 + 1) % 5) * 5 + c2]; steps += `<div class="step-item">${pair} → Cùng cột: <b>${outA}${outB}</b></div>`; }
+                    else { outA = matrix[r1 * 5 + c2]; outB = matrix[r2 * 5 + c1]; steps += `<div class="step-item">${pair} → Hình chữ nhật: <b>${outA}${outB}</b></div>`; }
+                    result += outA + outB;
+                });
             }
 
             document.getElementById('resC').innerText = result || "---";
             document.getElementById('resSteps').innerHTML = steps;
         }
 
-        // Initialize default
         window.onload = () => setMode('caesar');
     </script>
 </body>
