@@ -10,50 +10,62 @@
         .key-round-card { border-left: 4px solid #10b981; transition: all 0.2s; }
         .key-round-card:hover { border-left-width: 8px; background: rgba(16, 185, 129, 0.05); }
         .state-round-card { border-left: 4px solid #3b82f6; }
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-200 p-4 md:p-8">
+<body class="bg-slate-950 text-slate-200 p-4 md:p-8 font-sans">
     <div class="max-w-6xl mx-auto space-y-8">
-        <header class="flex justify-between items-end border-b border-slate-800 pb-6">
-            <div>
-                <h1 class="text-3xl font-black text-emerald-400 italic tracking-tighter">AES KEY ANALYZER</h1>
-                <p class="text-[10px] text-slate-500 uppercase tracking-[0.3em]">Chuyên sâu Key Expansion & XRC</p>
+        <header class="flex justify-between items-center border-b border-slate-800 pb-6">
+            <div class="flex items-center gap-6">
+                <a href="index.html" class="group flex items-center gap-2 text-slate-500 hover:text-emerald-400 transition-all">
+                    <span class="text-xl group-hover:-translate-x-1 transition-transform">←</span>
+                    <span class="text-[10px] font-black uppercase tracking-widest">Quay lại Menu</span>
+                </a>
+                <div class="h-8 w-[1px] bg-slate-800"></div>
+                <div>
+                    <h1 class="text-2xl font-black text-emerald-400 italic tracking-tighter uppercase">AES KEY ANALYZER</h1>
+                    <p class="text-[9px] text-slate-500 uppercase tracking-[0.3em]">Advanced Key Expansion Engine</p>
+                </div>
             </div>
-            <button onclick="location.reload()" class="text-[10px] font-bold text-slate-500 hover:text-white transition uppercase">Làm mới</button>
+            <button onclick="location.reload()" class="bg-slate-900 hover:bg-slate-800 px-4 py-2 rounded-lg text-[10px] font-bold text-slate-400 hover:text-white transition uppercase border border-slate-800">Làm mới</button>
         </header>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="bg-slate-900/50 p-6 rounded-3xl border border-slate-800">
-                <label class="block text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-2">Cipher Key (K - 32 Hex)</label>
-                <input id="inpK" value="2B7E151628AED2A6ABF7158809CF4F3C" class="w-full bg-slate-950 p-4 rounded-2xl border border-slate-800 text-emerald-400 font-bold hex-font uppercase focus:border-emerald-500 outline-none transition-all shadow-xl">
+            <div class="bg-slate-900/40 p-6 rounded-[32px] border border-slate-800 shadow-2xl">
+                <label class="block text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-3 ml-1">Cipher Key (K - 32 Hex)</label>
+                <input id="inpK" value="2B7E151628AED2A6ABF7158809CF4F3C" class="w-full bg-black/50 p-4 rounded-2xl border border-slate-800 text-emerald-400 font-bold hex-font uppercase focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/20 outline-none transition-all">
             </div>
-            <div class="bg-slate-900/50 p-6 rounded-3xl border border-slate-800">
-                <label class="block text-[10px] font-black text-blue-500 uppercase tracking-widest mb-2">Plaintext (M - Tùy chọn)</label>
-                <input id="inpM" placeholder="Để trống nếu chỉ muốn tìm khóa K..." class="w-full bg-slate-950 p-4 rounded-2xl border border-slate-800 text-blue-400 font-bold hex-font uppercase focus:border-blue-500 outline-none transition-all shadow-xl">
+            <div class="bg-slate-900/40 p-6 rounded-[32px] border border-slate-800 shadow-2xl">
+                <label class="block text-[10px] font-black text-blue-500 uppercase tracking-widest mb-3 ml-1">Plaintext (M - Tùy chọn)</label>
+                <input id="inpM" placeholder="Để trống nếu chỉ cần tìm các khóa K..." class="w-full bg-black/50 p-4 rounded-2xl border border-slate-800 text-blue-400 font-bold hex-font uppercase focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 outline-none transition-all">
             </div>
         </div>
 
-        <button onclick="analyze()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-5 rounded-2xl shadow-lg transform active:scale-[0.99] transition-all uppercase tracking-widest text-sm">
-            Phân tích khóa & Thuật toán
+        <button onclick="analyze()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-5 rounded-2xl shadow-lg shadow-emerald-900/20 transform active:scale-[0.98] transition-all uppercase tracking-widest text-xs">
+            Bắt đầu phân tích khóa & Thuật toán
         </button>
 
-        <div id="resultGrid" class="grid grid-cols-1 gap-8">
-            <div id="keySection" class="hidden space-y-4">
-                <h2 class="text-lg font-black text-emerald-400 flex items-center gap-2">
-                    <span class="w-8 h-8 flex items-center justify-center bg-emerald-500/20 rounded-lg">🔑</span> 
-                    BẢNG MỞ RỘNG KHÓA (ROUND KEYS)
+        <div id="resultGrid" class="grid grid-cols-1 gap-10">
+            <div id="keySection" class="hidden space-y-6">
+                <h2 class="text-sm font-black text-emerald-400 flex items-center gap-3 uppercase tracking-widest">
+                    <span class="w-10 h-10 flex items-center justify-center bg-emerald-500/10 rounded-xl border border-emerald-500/20">🔑</span> 
+                    Key Schedule (K0 - K10)
                 </h2>
-                <div id="keyLog" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs"></div>
+                <div id="keyLog" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 text-xs"></div>
             </div>
 
-            <div id="stateSection" class="hidden space-y-4">
-                <h2 class="text-lg font-black text-blue-400 flex items-center gap-2">
-                    <span class="w-8 h-8 flex items-center justify-center bg-blue-500/20 rounded-lg">⚙️</span> 
-                    BIẾN ĐỔI STATE (MÃ HÓA)
+            <div id="stateSection" class="hidden space-y-6">
+                <h2 class="text-sm font-black text-blue-400 flex items-center gap-3 uppercase tracking-widest">
+                    <span class="w-10 h-10 flex items-center justify-center bg-blue-500/10 rounded-xl border border-blue-500/20">⚙️</span> 
+                    State Transformations
                 </h2>
-                <div id="stateLog" class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs"></div>
+                <div id="stateLog" class="grid grid-cols-1 md:grid-cols-2 gap-5 text-xs"></div>
             </div>
         </div>
+        
+        <footer class="text-center opacity-20 text-[9px] uppercase tracking-[0.5em] py-12 font-bold">
+            AES Technical Analyzer • Kido v4.5
+        </footer>
     </div>
 
     <script>
@@ -109,7 +121,7 @@
 
             document.getElementById('keySection').classList.remove('hidden');
             let keyLog = document.getElementById('keyLog');
-            keyLog.innerHTML = `<div class="bg-emerald-500/10 p-4 rounded-xl border border-emerald-500/20 col-span-full font-bold hex-font text-emerald-400">K0 (Root Key): ${K}</div>`;
+            keyLog.innerHTML = `<div class="bg-emerald-500/10 p-5 rounded-2xl border border-emerald-500/20 col-span-full font-bold hex-font text-emerald-400 shadow-inner">K0 (Root Key): ${K}</div>`;
 
             // 1. KEY EXPANSION
             let keys = [K];
@@ -131,45 +143,45 @@
                 keys.push(fullKey);
 
                 keyLog.innerHTML += `
-                <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800 key-round-card space-y-2 shadow-lg">
-                    <div class="flex justify-between border-b border-slate-800 pb-1 mb-1">
-                        <span class="text-emerald-500 font-black italic">ROUND ${i}</span>
-                        <span class="text-slate-500">RCON: ${rcVal.substr(0,2)}</span>
+                <div class="bg-slate-900/60 p-5 rounded-3xl border border-slate-800 key-round-card space-y-3 shadow-xl backdrop-blur-sm">
+                    <div class="flex justify-between border-b border-slate-800 pb-2 mb-2">
+                        <span class="text-emerald-500 font-black italic tracking-wider uppercase text-[10px]">Round ${i}</span>
+                        <span class="text-slate-600 font-bold uppercase text-[9px]">RCON: ${rcVal.substr(0,2)}</span>
                     </div>
-                    <div class="text-[10px] space-y-1 hex-font text-slate-400">
-                        <div>Rot(w3): <span class="text-slate-200">${rot}</span></div>
-                        <div>Sub(Rot): <span class="text-slate-200">${sub}</span></div>
-                        <div class="text-emerald-500/80">XRC: ${xrc}</div>
+                    <div class="text-[10px] space-y-1 hex-font text-slate-500 font-medium">
+                        <div>Rot(w3): <span class="text-slate-300">${rot}</span></div>
+                        <div>Sub(Rot): <span class="text-slate-300">${sub}</span></div>
+                        <div class="text-emerald-500/60">XRC (Sub ⊕ Rcon): ${xrc}</div>
                     </div>
-                    <div class="text-emerald-300 font-bold hex-font break-all text-[11px] pt-1">
+                    <div class="text-emerald-400 font-black hex-font break-all text-[11px] pt-1 bg-black/30 p-2 rounded-lg border border-emerald-900/20">
                         K${i}: ${fullKey}
                     </div>
                 </div>`;
             }
 
-            // 2. STATE PROCESS (CHỈ NẾU CÓ M)
+            // 2. STATE PROCESS
             let stateSection = document.getElementById('stateSection');
             let stateLog = document.getElementById('stateLog');
             if(M.length === 32) {
                 stateSection.classList.remove('hidden');
                 let state = xor(M, K);
-                stateLog.innerHTML = `<div class="bg-blue-500/10 p-4 rounded-xl border border-blue-500/20 col-span-full font-bold hex-font text-blue-400">Round 0 (AddRoundKey): ${state}</div>`;
+                stateLog.innerHTML = `<div class="bg-blue-500/10 p-5 rounded-2xl border border-blue-500/20 col-span-full font-bold hex-font text-blue-400 shadow-inner">R0 (AddRoundKey): ${state}</div>`;
 
                 for(let i=1; i<=10; i++) {
                     let sb = subBytes(state);
                     let sr = shiftRows(sb);
-                    let mc = (i < 10) ? mixColumns(sr) : "None (Round 10)";
+                    let mc = (i < 10) ? mixColumns(sr) : "None (R10 Skipped)";
                     let next = (i < 10) ? xor(mc, keys[i]) : xor(sr, keys[10]);
 
                     stateLog.innerHTML += `
-                    <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800 state-round-card space-y-2">
-                        <div class="text-blue-500 font-black italic mb-1">ROUND ${i}</div>
-                        <div class="grid grid-cols-1 gap-1 hex-font text-[10px] text-slate-400">
-                            <div class="flex justify-between"><span>SubBytes:</span><span class="text-slate-200">${sb}</span></div>
-                            <div class="flex justify-between"><span>ShiftRows:</span><span class="text-slate-200">${sr}</span></div>
-                            <div class="flex justify-between"><span>MixCols:</span><span class="text-slate-200">${mc}</span></div>
+                    <div class="bg-slate-900/60 p-5 rounded-3xl border border-slate-800 state-round-card space-y-3 shadow-xl backdrop-blur-sm">
+                        <div class="text-blue-500 font-black italic tracking-wider uppercase text-[10px] mb-2">Round ${i} Transformation</div>
+                        <div class="grid grid-cols-1 gap-2 hex-font text-[10px] text-slate-500 font-medium leading-relaxed">
+                            <div class="flex justify-between border-b border-slate-800/50 pb-1"><span>SubBytes:</span><span class="text-slate-300">${sb}</span></div>
+                            <div class="flex justify-between border-b border-slate-800/50 pb-1"><span>ShiftRows:</span><span class="text-slate-300">${sr}</span></div>
+                            <div class="flex justify-between border-b border-slate-800/50 pb-1"><span>MixCols:</span><span class="text-slate-300">${mc}</span></div>
                         </div>
-                        <div class="bg-blue-500/5 p-2 rounded text-blue-300 font-bold hex-font text-[11px]">
+                        <div class="bg-blue-900/20 p-3 rounded-xl text-blue-300 font-black hex-font text-[11px] border border-blue-800/30">
                             New State: ${state = next}
                         </div>
                     </div>`;
