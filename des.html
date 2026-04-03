@@ -1,204 +1,413 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
     <title>DES Logic Solver - Kido Premium</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        :root {
-            --font-main: 'Inter', sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
-        }
-        body { font-family: var(--font-main); scroll-behavior: smooth; }
-        .hex-font { font-family: var(--font-mono); }
-        
-        .section-header { 
-            background: #0f172a; color: #f8fafc; padding: 12px 20px; 
-            font-weight: 800; border-radius: 12px; margin-top: 35px; 
-            text-transform: uppercase; letter-spacing: 1.5px; font-size: 0.75rem;
-            display: flex; align-items: center; border-left: 4px solid #ef4444;
-        }
+      :root {
+        --font-main: "Inter", sans-serif;
+        --font-mono: "JetBrains Mono", monospace;
+      }
+      body {
+        font-family: var(--font-main);
+        scroll-behavior: smooth;
+      }
+      .hex-font {
+        font-family: var(--font-mono);
+      }
 
-        .round-card { 
-            border: 1px solid #e2e8f0; border-radius: 20px; 
-            margin-top: 24px; overflow: hidden; background: white;
-            transition: transform 0.2s;
-        }
-        .round-card:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+      .section-header {
+        background: #0f172a;
+        color: #f8fafc;
+        padding: 12px 20px;
+        font-weight: 800;
+        border-radius: 12px;
+        margin-top: 35px;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        font-size: 0.75rem;
+        display: flex;
+        align-items: center;
+        border-left: 4px solid #ef4444;
+      }
 
-        .round-header { 
-            background: #f8fafc; padding: 12px 20px; border-bottom: 1px solid #e2e8f0;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        
-        .formula { font-size: 0.7rem; color: #94a3b8; font-weight: 600; font-style: italic; }
-        .step-label { color: #64748b; font-weight: 700; display: block; margin-bottom: 4px; font-size: 0.65rem; text-transform: uppercase; }
-        
-        .value-box { 
-            background: #f1f5f9; padding: 8px 12px; border-radius: 10px; 
-            border: 1px solid #cbd5e1; font-size: 0.85rem; color: #334155;
-        }
+      .round-card {
+        border: 1px solid #e2e8f0;
+        border-radius: 20px;
+        margin-top: 24px;
+        overflow: hidden;
+        background: white;
+        transition: transform 0.2s;
+      }
+      .round-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+      }
 
-        .final-badge {
-            background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
-            color: white; padding: 40px; border-radius: 24px; text-align: center;
-        }
+      .round-header {
+        background: #f8fafc;
+        padding: 12px 20px;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
 
-        .btn-back {
-            display: inline-flex; align-items: center; gap: 8px;
-            color: #64748b; font-weight: 700; font-size: 0.8rem; transition: 0.2s;
-        }
-        .btn-back:hover { color: #ef4444; }
+      .formula {
+        font-size: 0.7rem;
+        color: #94a3b8;
+        font-weight: 600;
+        font-style: italic;
+      }
+      .step-label {
+        color: #64748b;
+        font-weight: 700;
+        display: block;
+        margin-bottom: 4px;
+        font-size: 0.65rem;
+        text-transform: uppercase;
+      }
+
+      .value-box {
+        background: #f1f5f9;
+        padding: 8px 12px;
+        border-radius: 10px;
+        border: 1px solid #cbd5e1;
+        font-size: 0.85rem;
+        color: #334155;
+      }
+
+      .final-badge {
+        background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+        color: white;
+        padding: 40px;
+        border-radius: 24px;
+        text-align: center;
+      }
+
+      .btn-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #64748b;
+        font-weight: 700;
+        font-size: 0.8rem;
+        transition: 0.2s;
+      }
+      .btn-back:hover {
+        color: #ef4444;
+      }
     </style>
-</head>
-<body class="bg-slate-50 text-slate-900 p-4 md:p-10">
-
+  </head>
+  <body class="bg-slate-50 text-slate-900 p-4 md:p-10">
     <div class="max-w-4xl mx-auto">
-        <div class="flex justify-between items-center mb-10">
-            <a href="./index.html" class="btn-back uppercase tracking-widest">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-                Quay lại
-            </a>
-            <h1 class="text-2xl font-black tracking-tighter italic">DES <span class="text-red-500">LAB</span></h1>
-        </div>
+      <div class="flex justify-between items-center mb-10">
+        <a href="./index.html" class="btn-back uppercase tracking-widest">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="3"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          Quay lại
+        </a>
+        <h1 class="text-2xl font-black tracking-tighter italic">
+          DES <span class="text-red-500">LAB</span>
+        </h1>
+      </div>
 
-        <div class="bg-white p-8 rounded-[32px] shadow-xl shadow-slate-200/50 border border-slate-200 mb-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                <div class="space-y-2">
-                    <label class="step-label ml-1">Master Key (Hex 16)</label>
-                    <input id="keyK" class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl hex-font focus:border-red-500 outline-none uppercase transition-all" placeholder="133457799BBCDFF1">
-                </div>
-                <div class="space-y-2">
-                    <label class="step-label ml-1">Plaintext (Hex 16)</label>
-                    <input id="textM" class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl hex-font focus:border-red-500 outline-none uppercase transition-all" placeholder="0123456789ABCDEF">
-                </div>
-            </div>
-            <button onclick="solveDES()" class="w-full bg-slate-900 hover:bg-red-600 text-white font-black py-5 rounded-2xl transition-all active:scale-95 uppercase text-sm tracking-[2px]">
-                Phân tích thuật toán
-            </button>
+      <div
+        class="bg-white p-8 rounded-[32px] shadow-xl shadow-slate-200/50 border border-slate-200 mb-8"
+      >
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+          <div class="space-y-2">
+            <label class="step-label ml-1">Master Key (Hex 16)</label>
+            <input
+              id="keyK"
+              class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl hex-font focus:border-red-500 outline-none uppercase transition-all"
+              placeholder="133457799BBCDFF1"
+            />
+          </div>
+          <div class="space-y-2">
+            <label class="step-label ml-1">Plaintext (Hex 16)</label>
+            <input
+              id="textM"
+              class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl hex-font focus:border-red-500 outline-none uppercase transition-all"
+              placeholder="0123456789ABCDEF"
+            />
+          </div>
         </div>
+        <button
+          onclick="solveDES()"
+          class="w-full bg-slate-900 hover:bg-red-600 text-white font-black py-5 rounded-2xl transition-all active:scale-95 uppercase text-sm tracking-[2px]"
+        >
+          Phân tích thuật toán
+        </button>
+      </div>
 
-        <div id="outputArea" class="hidden space-y-6">
-            <div id="solverContent"></div>
-            <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="w-full py-4 text-slate-400 font-bold text-[10px] uppercase tracking-widest hover:text-red-500 transition-colors">
-                ↑ Cuộn lên đầu trang
-            </button>
-        </div>
+      <div id="outputArea" class="hidden space-y-6">
+        <div id="solverContent"></div>
+        <button
+          onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+          class="w-full py-4 text-slate-400 font-bold text-[10px] uppercase tracking-widest hover:text-red-500 transition-colors"
+        >
+          ↑ Cuộn lên đầu trang
+        </button>
+      </div>
 
-        <div id="placeholder" class="text-center py-20 bg-white rounded-[32px] border-2 border-dashed border-slate-200">
-            <p class="text-slate-400 font-medium uppercase text-xs tracking-widest">Sẵn sàng tính toán dữ liệu...</p>
-        </div>
+      <div
+        id="placeholder"
+        class="text-center py-20 bg-white rounded-[32px] border-2 border-dashed border-slate-200"
+      >
+        <p class="text-slate-400 font-medium uppercase text-xs tracking-widest">
+          Sẵn sàng tính toán dữ liệu...
+        </p>
+      </div>
     </div>
 
     <script>
-        // Cấu hình bảng DES (Giữ nguyên từ bản Fixed của bạn)
-        const PC1 = [57,49,41,33,25,17,9,1,58,50,42,34,26,18,10,2,59,51,43,35,27,19,11,3,60,52,44,36,63,55,47,39,31,23,15,7,62,54,46,38,30,22,14,6,61,53,45,37,29,21,13,5,28,20,12,4];
-        const PC2 = [14,17,11,24,1,5,3,28,15,6,21,10,23,19,12,4,26,8,16,7,27,20,13,2,41,52,31,37,47,55,30,40,51,45,33,48,44,49,39,56,34,53,46,42,50,36,29,32];
-        const IP = [58,50,42,34,26,18,10,2,60,52,44,36,28,20,12,4,62,54,46,38,30,22,14,6,64,56,48,40,32,24,16,8,57,49,41,33,25,17,9,1,59,51,43,35,27,19,11,3,61,53,45,37,29,21,13,5,63,55,47,39,31,23,15,7];
-        const E = [32,1,2,3,4,5,4,5,6,7,8,9,8,9,10,11,12,13,12,13,14,15,16,17,16,17,18,19,20,21,20,21,22,23,24,25,24,25,26,27,28,29,28,29,30,31,32,1];
-        const P = [16,7,20,21,29,12,28,17,1,15,23,26,5,18,31,10,2,8,24,14,32,27,3,9,19,13,30,6,22,11,4,25];
-        const IP_INV = [40,8,48,16,56,24,64,32,39,7,47,15,55,23,63,31,38,6,46,14,54,22,62,30,37,5,45,13,53,21,61,29,36,4,44,12,52,20,60,28,35,3,43,11,51,19,59,27,34,2,42,10,50,18,58,26,33,1,41,9,49,17,57,25];
-        const SHIFTS = [1,1,2,2,2,2,2,2,1,2,2,2,2,2,2,1];
-        const S_BOXES = [
-            [[14,4,13,1,2,15,11,8,3,10,6,12,5,9,0,7],[0,15,7,4,14,2,13,1,10,6,12,11,9,5,3,8],[4,1,14,8,13,6,2,11,15,12,9,7,3,10,5,0],[15,12,8,2,4,9,1,7,5,11,3,14,10,0,6,13]],
-            [[15,1,8,14,6,11,3,4,9,7,2,13,12,0,5,10],[3,13,4,7,15,2,8,14,12,0,1,10,6,9,11,5],[0,14,7,11,10,4,13,1,5,8,12,6,9,3,2,15],[13,8,10,1,3,15,4,2,11,6,7,12,0,5,14,9]],
-            [[10,0,9,14,6,3,15,5,1,13,12,7,11,4,2,8],[13,7,0,9,3,4,6,10,2,8,5,14,12,11,15,1],[13,6,4,9,8,15,3,0,11,1,2,12,5,10,14,7],[1,10,13,0,6,9,8,7,4,15,14,3,11,5,2,12]],
-            [[7,13,14,3,0,6,9,10,1,2,8,5,11,12,4,15],[13,8,11,5,6,15,0,3,4,7,2,12,1,10,14,9],[10,6,9,0,12,11,7,13,15,1,3,14,5,2,8,4],[3,15,0,6,10,1,13,8,9,4,5,11,12,7,2,14]],
-            [[2,12,4,1,7,10,11,6,8,5,3,15,13,0,14,9],[14,11,2,12,4,7,13,1,5,0,15,10,3,9,8,6],[4,2,1,11,10,13,7,8,15,9,12,5,6,3,0,14],[11,8,12,7,1,14,2,13,6,15,0,9,10,4,5,3]],
-            [[12,1,10,15,9,2,6,8,0,13,3,4,14,7,5,11],[10,15,4,2,7,12,9,5,6,1,13,14,0,11,3,8],[9,14,15,5,2,8,12,3,7,0,4,10,1,13,11,6],[4,3,2,12,9,5,15,10,11,14,1,7,6,0,8,13]],
-            [[4,11,2,14,15,0,8,13,3,12,9,7,5,10,6,1],[13,0,11,7,4,9,1,10,14,3,5,12,2,15,8,6],[1,4,11,13,12,3,7,14,10,15,6,8,0,5,9,2],[6,11,13,8,1,4,10,7,9,5,0,15,14,2,3,12]],
-            [[13,2,8,4,6,15,11,1,10,9,3,14,5,0,12,7],[1,15,13,8,10,3,7,4,12,5,6,11,0,14,9,2],[7,11,4,1,9,12,14,2,0,6,10,13,15,3,5,8],[2,1,14,7,4,10,8,13,15,12,9,0,3,5,6,11]]
-        ];
+      // Cấu hình bảng DES (Giữ nguyên từ bản Fixed của bạn)
+      const PC1 = [
+        57, 49, 41, 33, 25, 17, 9, 1, 58, 50, 42, 34, 26, 18, 10, 2, 59, 51, 43,
+        35, 27, 19, 11, 3, 60, 52, 44, 36, 63, 55, 47, 39, 31, 23, 15, 7, 62,
+        54, 46, 38, 30, 22, 14, 6, 61, 53, 45, 37, 29, 21, 13, 5, 28, 20, 12, 4,
+      ];
+      const PC2 = [
+        14, 17, 11, 24, 1, 5, 3, 28, 15, 6, 21, 10, 23, 19, 12, 4, 26, 8, 16, 7,
+        27, 20, 13, 2, 41, 52, 31, 37, 47, 55, 30, 40, 51, 45, 33, 48, 44, 49,
+        39, 56, 34, 53, 46, 42, 50, 36, 29, 32,
+      ];
+      const IP = [
+        58, 50, 42, 34, 26, 18, 10, 2, 60, 52, 44, 36, 28, 20, 12, 4, 62, 54,
+        46, 38, 30, 22, 14, 6, 64, 56, 48, 40, 32, 24, 16, 8, 57, 49, 41, 33,
+        25, 17, 9, 1, 59, 51, 43, 35, 27, 19, 11, 3, 61, 53, 45, 37, 29, 21, 13,
+        5, 63, 55, 47, 39, 31, 23, 15, 7,
+      ];
+      const E = [
+        32, 1, 2, 3, 4, 5, 4, 5, 6, 7, 8, 9, 8, 9, 10, 11, 12, 13, 12, 13, 14,
+        15, 16, 17, 16, 17, 18, 19, 20, 21, 20, 21, 22, 23, 24, 25, 24, 25, 26,
+        27, 28, 29, 28, 29, 30, 31, 32, 1,
+      ];
+      const P = [
+        16, 7, 20, 21, 29, 12, 28, 17, 1, 15, 23, 26, 5, 18, 31, 10, 2, 8, 24,
+        14, 32, 27, 3, 9, 19, 13, 30, 6, 22, 11, 4, 25,
+      ];
+      const IP_INV = [
+        40, 8, 48, 16, 56, 24, 64, 32, 39, 7, 47, 15, 55, 23, 63, 31, 38, 6, 46,
+        14, 54, 22, 62, 30, 37, 5, 45, 13, 53, 21, 61, 29, 36, 4, 44, 12, 52,
+        20, 60, 28, 35, 3, 43, 11, 51, 19, 59, 27, 34, 2, 42, 10, 50, 18, 58,
+        26, 33, 1, 41, 9, 49, 17, 57, 25,
+      ];
+      const SHIFTS = [1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1];
+      const S_BOXES = [
+        [
+          [14, 4, 13, 1, 2, 15, 11, 8, 3, 10, 6, 12, 5, 9, 0, 7],
+          [0, 15, 7, 4, 14, 2, 13, 1, 10, 6, 12, 11, 9, 5, 3, 8],
+          [4, 1, 14, 8, 13, 6, 2, 11, 15, 12, 9, 7, 3, 10, 5, 0],
+          [15, 12, 8, 2, 4, 9, 1, 7, 5, 11, 3, 14, 10, 0, 6, 13],
+        ],
+        [
+          [15, 1, 8, 14, 6, 11, 3, 4, 9, 7, 2, 13, 12, 0, 5, 10],
+          [3, 13, 4, 7, 15, 2, 8, 14, 12, 0, 1, 10, 6, 9, 11, 5],
+          [0, 14, 7, 11, 10, 4, 13, 1, 5, 8, 12, 6, 9, 3, 2, 15],
+          [13, 8, 10, 1, 3, 15, 4, 2, 11, 6, 7, 12, 0, 5, 14, 9],
+        ],
+        [
+          [10, 0, 9, 14, 6, 3, 15, 5, 1, 13, 12, 7, 11, 4, 2, 8],
+          [13, 7, 0, 9, 3, 4, 6, 10, 2, 8, 5, 14, 12, 11, 15, 1],
+          [13, 6, 4, 9, 8, 15, 3, 0, 11, 1, 2, 12, 5, 10, 14, 7],
+          [1, 10, 13, 0, 6, 9, 8, 7, 4, 15, 14, 3, 11, 5, 2, 12],
+        ],
+        [
+          [7, 13, 14, 3, 0, 6, 9, 10, 1, 2, 8, 5, 11, 12, 4, 15],
+          [13, 8, 11, 5, 6, 15, 0, 3, 4, 7, 2, 12, 1, 10, 14, 9],
+          [10, 6, 9, 0, 12, 11, 7, 13, 15, 1, 3, 14, 5, 2, 8, 4],
+          [3, 15, 0, 6, 10, 1, 13, 8, 9, 4, 5, 11, 12, 7, 2, 14],
+        ],
+        [
+          [2, 12, 4, 1, 7, 10, 11, 6, 8, 5, 3, 15, 13, 0, 14, 9],
+          [14, 11, 2, 12, 4, 7, 13, 1, 5, 0, 15, 10, 3, 9, 8, 6],
+          [4, 2, 1, 11, 10, 13, 7, 8, 15, 9, 12, 5, 6, 3, 0, 14],
+          [11, 8, 12, 7, 1, 14, 2, 13, 6, 15, 0, 9, 10, 4, 5, 3],
+        ],
+        [
+          [12, 1, 10, 15, 9, 2, 6, 8, 0, 13, 3, 4, 14, 7, 5, 11],
+          [10, 15, 4, 2, 7, 12, 9, 5, 6, 1, 13, 14, 0, 11, 3, 8],
+          [9, 14, 15, 5, 2, 8, 12, 3, 7, 0, 4, 10, 1, 13, 11, 6],
+          [4, 3, 2, 12, 9, 5, 15, 10, 11, 14, 1, 7, 6, 0, 8, 13],
+        ],
+        [
+          [4, 11, 2, 14, 15, 0, 8, 13, 3, 12, 9, 7, 5, 10, 6, 1],
+          [13, 0, 11, 7, 4, 9, 1, 10, 14, 3, 5, 12, 2, 15, 8, 6],
+          [1, 4, 11, 13, 12, 3, 7, 14, 10, 15, 6, 8, 0, 5, 9, 2],
+          [6, 11, 13, 8, 1, 4, 10, 7, 9, 5, 0, 15, 14, 2, 3, 12],
+        ],
+        [
+          [13, 2, 8, 4, 6, 15, 11, 1, 10, 9, 3, 14, 5, 0, 12, 7],
+          [1, 15, 13, 8, 10, 3, 7, 4, 12, 5, 6, 11, 0, 14, 9, 2],
+          [7, 11, 4, 1, 9, 12, 14, 2, 0, 6, 10, 13, 15, 3, 5, 8],
+          [2, 1, 14, 7, 4, 10, 8, 13, 15, 12, 9, 0, 3, 5, 6, 11],
+        ],
+      ];
 
-        const hexToBin = h => h.split('').map(c => parseInt(c, 16).toString(2).padStart(4, '0')).join('');
-        const binToHex = b => b.match(/.{4}/g).map(s => parseInt(s, 2).toString(16).toUpperCase()).join('');
-        const permute = (s, t) => t.map(i => s[i - 1]).join('');
-        const xor = (a, b) => a.split('').map((c, i) => c === b[i] ? '0' : '1').join('');
+      const hexToBin = (h) =>
+        h
+          .split("")
+          .map((c) => parseInt(c, 16).toString(2).padStart(4, "0"))
+          .join("");
+      const binToHex = (b) =>
+        b
+          .match(/.{4}/g)
+          .map((s) => parseInt(s, 2).toString(16).toUpperCase())
+          .join("");
+      const permute = (s, t) => t.map((i) => s[i - 1]).join("");
+      const xor = (a, b) =>
+        a
+          .split("")
+          .map((c, i) => (c === b[i] ? "0" : "1"))
+          .join("");
 
-        function solveDES() {
-            const kH = document.getElementById('keyK').value.trim().toUpperCase();
-            const mH = document.getElementById('textM').value.trim().toUpperCase();
-            if (kH.length !== 16 || mH.length !== 16) { alert("Vui lòng nhập đủ 16 ký tự Hex!"); return; }
+      function solveDES() {
+        const kH = document.getElementById("keyK").value.trim().toUpperCase();
+        const mH = document.getElementById("textM").value.trim().toUpperCase();
+        if (kH.length !== 16 || mH.length !== 16) {
+          alert("Vui lòng nhập đủ 16 ký tự Hex!");
+          return;
+        }
 
-            document.getElementById('placeholder').style.display = 'none';
-            document.getElementById('outputArea').classList.remove('hidden');
-            const res = document.getElementById('solverContent');
-            res.innerHTML = "";
+        document.getElementById("placeholder").style.display = "none";
+        document.getElementById("outputArea").classList.remove("hidden");
+        const res = document.getElementById("solverContent");
+        res.innerHTML = "";
 
-            let kB = hexToBin(kH), mB = hexToBin(mH);
-            
-            // Step 1: Key
-            res.innerHTML += `<div class="section-header">BƯỚC 1: SINH KHÓA VÒNG</div>`;
-            let kp1 = permute(kB, PC1), C = kp1.slice(0, 28), D = kp1.slice(28, 56), subkeys = [];
-            let keyGrid = `<div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">`;
-            for (let i = 0; i < 16; i++) {
-                let s = SHIFTS[i]; C = C.slice(s) + C.slice(0, s); D = D.slice(s) + D.slice(0, s);
-                let Ki = permute(C + D, PC2); subkeys.push(Ki);
-                keyGrid += `<div class="bg-white p-3 rounded-xl border border-slate-200"><span class="step-label text-[10px]">Key K${i+1}</span><span class="hex-font text-blue-600 font-bold text-xs">${binToHex(Ki)}</span></div>`;
-            }
-            res.innerHTML += keyGrid + `</div>`;
+        let kB = hexToBin(kH),
+          mB = hexToBin(mH);
 
-            // Step 2: IP
-            res.innerHTML += `<div class="section-header">BƯỚC 2: HOÁN VỊ KHỞI TẠO (IP)</div>`;
-            let ipM = permute(mB, IP), L = ipM.slice(0, 32), R = ipM.slice(32, 64);
-            res.innerHTML += `<div class="mt-4 p-5 bg-white border border-slate-200 rounded-2xl flex flex-wrap gap-8">
+        // Step 1: Key
+        res.innerHTML += `<div class="section-header">BƯỚC 1: SINH KHÓA VÒNG</div>`;
+        let kp1 = permute(kB, PC1),
+          C = kp1.slice(0, 28),
+          D = kp1.slice(28, 56),
+          subkeys = [];
+
+        res.innerHTML += `<div class="mt-4 p-5 bg-white border border-slate-200 rounded-2xl flex flex-wrap gap-8">
+                <div><span class="step-label">PC-1 Result</span><div class="hex-font font-bold text-slate-700">${binToHex(kp1)}</div></div>
+                <div><span class="step-label">C0</span><div class="hex-font font-bold text-red-500">${binToHex(C)}</div></div>
+                <div><span class="step-label">D0</span><div class="hex-font font-bold text-red-500">${binToHex(D)}</div></div>
+            </div>`;
+
+        let keyGrid = `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mt-4">`;
+        for (let i = 0; i < 16; i++) {
+          let s = SHIFTS[i];
+          C = C.slice(s) + C.slice(0, s);
+          D = D.slice(s) + D.slice(0, s);
+          let Ki = permute(C + D, PC2);
+          subkeys.push(Ki);
+          keyGrid += `<div class="bg-white p-3 rounded-xl border border-slate-200 flex flex-col gap-1">
+                    <span class="step-label text-[10px]">Vòng ${i + 1} (Dịch left ${s} bit)</span>
+                    <div class="flex justify-between items-center"><span class="text-[10px] font-bold text-slate-500">C${i + 1}</span><span class="hex-font text-slate-700 font-bold text-xs">${binToHex(C)}</span></div>
+                    <div class="flex justify-between items-center"><span class="text-[10px] font-bold text-slate-500">D${i + 1}</span><span class="hex-font text-slate-700 font-bold text-xs">${binToHex(D)}</span></div>
+                    <div class="flex justify-between items-center mt-1 pt-1 border-t border-slate-100"><span class="text-[10px] font-bold text-slate-500">K${i + 1}</span><span class="hex-font text-blue-600 font-bold text-xs">${binToHex(Ki)}</span></div>
+                </div>`;
+        }
+        res.innerHTML += keyGrid + `</div>`;
+        // Step 2: IP
+        res.innerHTML += `<div class="section-header">BƯỚC 2: HOÁN VỊ KHỞI TẠO (IP)</div>`;
+        let ipM = permute(mB, IP),
+          L = ipM.slice(0, 32),
+          R = ipM.slice(32, 64);
+        res.innerHTML += `<div class="mt-4 p-5 bg-white border border-slate-200 rounded-2xl flex flex-wrap gap-8">
                 <div><span class="step-label">IP Result</span><div class="hex-font font-bold text-slate-700">${binToHex(ipM)}</div></div>
                 <div><span class="step-label">L0 (Vế trái)</span><div class="hex-font font-bold text-red-500">${binToHex(L)}</div></div>
                 <div><span class="step-label">R0 (Vế phải)</span><div class="hex-font font-bold text-red-500">${binToHex(R)}</div></div>
             </div>`;
 
-            // Step 3: 16 Rounds
-            res.innerHTML += `<div class="section-header">BƯỚC 3: 16 VÒNG FEISTEL</div>`;
-            for (let i = 0; i < 16; i++) {
-                let pL = L, pR = R;
-                let expR = permute(pR, E), xored = xor(expR, subkeys[i]), sBOut = "";
-                for (let j = 0; j < 8; j++) {
-                    let b = xored.slice(j * 6, (j + 1) * 6), r = parseInt(b[0] + b[5], 2), c = parseInt(b.slice(1, 5), 2);
-                    sBOut += S_BOXES[j][r][c].toString(2).padStart(4, '0');
-                }
-                let fOut = permute(sBOut, P);
-                R = xor(pL, fOut); L = pR;
+        // Step 3: 16 Rounds
+        res.innerHTML += `<div class="section-header">BƯỚC 3: 16 VÒNG FEISTEL</div>`;
+        for (let i = 0; i < 16; i++) {
+          let pL = L,
+            pR = R;
+          let expR = permute(pR, E),
+            xored = xor(expR, subkeys[i]),
+            sBOut = "";
+          for (let j = 0; j < 8; j++) {
+            let b = xored.slice(j * 6, (j + 1) * 6),
+              r = parseInt(b[0] + b[5], 2),
+              c = parseInt(b.slice(1, 5), 2);
+            sBOut += S_BOXES[j][r][c].toString(2).padStart(4, "0");
+          }
+          let fOut = permute(sBOut, P);
+          R = xor(pL, fOut);
+          L = pR;
 
-                res.innerHTML += `
+          res.innerHTML += `
                 <div class="round-card">
                     <div class="round-header">
-                        <span class="font-black text-slate-800">VÒNG ${i+1}</span>
-                        <span class="formula">K${i+1} = ${binToHex(subkeys[i])}</span>
+                        <span class="font-black text-slate-800">VÒNG ${i + 1}</span>
+                        <span class="formula">K${i + 1} = ${binToHex(subkeys[i])}</span>
                     </div>
-                    <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="space-y-4">
-                            <div>
-                                <span class="step-label">Tính hàm f(R${i}, K${i+1})</span>
-                                <div class="value-box hex-font bg-slate-50">${binToHex(fOut)}</div>
+                    <div class="p-5 space-y-6">
+                        <div>
+                            <h4 class="text-[10px] font-bold text-slate-400 mb-3 border-b border-slate-100 pb-2 uppercase tracking-wider">Chi tiết hàm f(R, K)</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <span class="step-label">Mở rộng E(R${i})</span>
+                                    <div class="value-box hex-font bg-slate-50">${binToHex(expR)}</div>
+                                </div>
+                                <div>
+                                    <span class="step-label">XOR: E(R${i}) ⊕ K${i + 1}</span>
+                                    <div class="value-box hex-font bg-slate-50">${binToHex(xored)}</div>
+                                </div>
+                                <div>
+                                    <span class="step-label">Phép thế S-Box (S1-S8)</span>
+                                    <div class="value-box hex-font bg-slate-50">${binToHex(sBOut)}</div>
+                                </div>
+                                <div>
+                                    <span class="step-label">Hoán vị P / Hàm f</span>
+                                    <div class="value-box hex-font bg-slate-50">${binToHex(fOut)}</div>
+                                </div>
                             </div>
                         </div>
-                        <div class="space-y-4">
-                            <div class="flex gap-4">
-                                <div class="flex-1">
-                                    <span class="step-label text-red-500">L${i+1} = R${i}</span>
-                                    <div class="hex-font font-bold text-lg">${binToHex(L)}</div>
+                        <div>
+                            <h4 class="text-[10px] font-bold text-slate-400 mb-3 border-b border-slate-100 pb-2 uppercase tracking-wider">Kết quả L, R (Đầu ra vòng)</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="bg-red-50/50 p-4 rounded-xl border border-red-100">
+                                    <span class="step-label text-red-500">L${i + 1} = R${i}</span>
+                                    <div class="hex-font font-black text-lg text-red-600">${binToHex(L)}</div>
                                 </div>
-                                <div class="flex-1">
-                                    <span class="step-label text-red-500">R${i+1} = L${i} ⊕ f</span>
-                                    <div class="hex-font font-bold text-lg">${binToHex(R)}</div>
+                                <div class="bg-red-50/50 p-4 rounded-xl border border-red-100">
+                                    <span class="step-label text-red-500">R${i + 1} = L${i} ⊕ f</span>
+                                    <div class="hex-font font-black text-lg text-red-600">${binToHex(R)}</div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>`;
-            }
+        }
 
-            // Step 4: IP-1
-            res.innerHTML += `<div class="section-header">BƯỚC 4: HOÁN VỊ NGHỊCH ĐẢO (IP⁻¹)</div>`;
-            let fin = permute(R + L, IP_INV);
-            res.innerHTML += `
+        // Step 4: IP-1
+        res.innerHTML += `<div class="section-header">BƯỚC 4: HOÁN VỊ NGHỊCH ĐẢO (IP⁻¹)</div>`;
+        let fin = permute(R + L, IP_INV);
+        res.innerHTML += `
             <div class="final-badge mt-6 shadow-2xl">
                 <span class="text-[10px] font-black uppercase tracking-[4px] opacity-60">Ciphertext Result</span>
                 <div class="text-5xl font-black hex-font mt-2 tracking-tighter uppercase">${binToHex(fin)}</div>
             </div>`;
-        }
+      }
     </script>
-</body>
+  </body>
 </html>
