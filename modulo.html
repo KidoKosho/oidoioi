@@ -161,7 +161,7 @@
 
         function calcBasicExp() {
             let a = big(document.getElementById('eb_a').value || 0), x = big(document.getElementById('eb_x').value || 0), b = big(document.getElementById('eb_b').value || 0), y = big(document.getElementById('eb_y').value || 0), n = big(document.getElementById('eb_n').value || 1);
-            let ax = (a * x) % n, by = (b * y) % n, invBy = modInverse(by, n);
+            let ax = big(powerMod(a, x, n)) % n, by = big(powerMod(b, y, n)) % n, invBy = modInverse(by, n);
             document.getElementById('resBasic').innerHTML = `A1 (Cộng): ${(ax + by) % n}<br>A2 (Trừ): ${(ax - by + n) % n}<br>A3 (Nhân): ${(ax * by) % n}<br>A4 (Nghịch đảo by): ${invBy}<br>A5 (Chia ax/by): ${(invBy === 'N/A') ? 'N/A' : (ax * big(invBy)) % n}`;
         }
     </script>
