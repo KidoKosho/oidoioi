@@ -84,7 +84,7 @@
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('tab-active'));
             document.getElementById('nav-' + mode).classList.add('tab-active');
             
-            const titles = { caesar: "Mã Caesar", vigenere: "Mã Vigenere", playfair: "Mã Playfair", trans: "Mã Hoán vị Zig-Zag" };
+            const titles = { caesar: "Mã Caesar", vigenere: "Mã Vigenere", playfair: "Mã Playfair", trans: "RAIL-Fence" };
             document.getElementById('mode-title').innerText = titles[mode];
 
             const keyBox = document.getElementById('key-container');
