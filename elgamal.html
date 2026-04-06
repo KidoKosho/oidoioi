@@ -2,71 +2,63 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>DSA Mobile Tool</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
-        body { font-family: 'JetBrains Mono', monospace; touch-action: manipulation; }
-        .input-kido { @apply w-full bg-slate-950 p-3 rounded-xl border border-slate-700 text-orange-400 focus:border-orange-500 outline-none text-base; }
-    </style>
+    <title>ElGamal Step-by-Step</title>
 </head>
-<body class="bg-slate-900 text-slate-200 p-3 pb-10">
-    <div class="max-w-lg mx-auto space-y-5">
-        <div class="flex items-center justify-between">
-            <a href="index.html" class="text-blue-400 text-sm">← Menu</a>
-            <h1 class="text-lg font-black text-orange-500 italic uppercase">DSA Digital Sign</h1>
-        </div>
+<body class="bg-slate-900 text-slate-200 p-4 pb-20">
+    <div class="max-w-5xl mx-auto space-y-6">
+        <a href="index.html" class="text-blue-400 hover:underline">← Menu</a>
+        <h1 class="text-2xl font-bold text-emerald-400 border-b border-slate-700 pb-2 italic text-center uppercase">Hệ mã ElGamal: Lời giải chi tiết</h1>
 
-        <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow-lg space-y-3">
-            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center">Tham số hệ thống</p>
-            <div class="grid grid-cols-3 gap-2">
-                <div><label class="text-[9px] block mb-1 text-center">Số p</label>
-                    <input id="p" inputmode="numeric" class="w-full bg-slate-900 p-2 rounded-lg border border-slate-600 text-center text-sm"></div>
-                <div><label class="text-[9px] block mb-1 text-center">Số q</label>
-                    <input id="q" inputmode="numeric" class="w-full bg-slate-900 p-2 rounded-lg border border-slate-600 text-center text-sm"></div>
-                <div><label class="text-[9px] block mb-1 text-center">Số h</label>
-                    <input id="h" inputmode="numeric" class="w-full bg-slate-900 p-2 rounded-lg border border-slate-600 text-center text-sm"></div>
+        <section class="bg-slate-800 p-5 rounded-xl border border-slate-700 shadow-lg">
+            <h2 class="text-xs font-bold text-slate-400 uppercase mb-4 tracking-widest">1. Thiết lập hệ thống (Public Key)</h2>
+            <div class="grid grid-cols-3 gap-4">
+                <div><label class="text-[10px] block mb-1">Số nguyên tố q</label><input id="q" placeholder="VD: 71" class="w-full bg-slate-900 p-2 rounded border border-slate-600 font-mono text-emerald-400"></div>
+                <div><label class="text-[10px] block mb-1">Căn nguyên thủy a</label><input id="a" placeholder="VD: 7" class="w-full bg-slate-900 p-2 rounded border border-slate-600 font-mono text-emerald-400"></div>
+                <div><label class="text-[10px] block mb-1">Khóa riêng xA</label><input id="xA" placeholder="VD: 12" class="w-full bg-slate-900 p-2 rounded border border-slate-600 font-mono text-red-400"></div>
             </div>
-        </div>
-
-        <section class="bg-slate-800 p-5 rounded-2xl border-t-4 border-orange-500 shadow-xl space-y-4">
-            <h2 class="text-sm font-bold text-orange-400 uppercase flex items-center gap-2">
-                <span class="w-2 h-2 bg-orange-500 rounded-full"></span> Người Ký
-            </h2>
-            <div class="grid grid-cols-3 gap-2">
-                <input id="xA" placeholder="xA" inputmode="numeric" class="bg-slate-900 p-3 rounded-xl border border-slate-600 text-xs text-center">
-                <input id="k" placeholder="k" inputmode="numeric" class="bg-slate-900 p-3 rounded-xl border border-slate-600 text-xs text-center">
-                <input id="hm" placeholder="H(M)" inputmode="numeric" class="bg-slate-900 p-3 rounded-xl border border-slate-600 text-xs text-center">
-            </div>
-            <button onclick="sign()" class="w-full bg-orange-600 hover:bg-orange-500 py-4 rounded-xl font-black uppercase text-sm shadow-lg active:scale-95 transition-all">
-                Tạo chữ ký (r, s)
-            </button>
-            <div id="resSign" class="p-4 bg-black/40 rounded-xl text-xs leading-relaxed text-orange-200 border border-orange-900/20">
-                Chờ dữ liệu...
-            </div>
+            <button onclick="calcYa()" class="w-full mt-4 bg-emerald-600 hover:bg-emerald-500 py-2 rounded font-bold transition">TÍNH KHÓA CÔNG KHAI yA</button>
+            <div id="resYa" class="mt-2 text-center font-mono text-sm text-emerald-300 italic">yA = a^xA mod q = ?</div>
         </section>
 
-        <section class="bg-slate-800 p-5 rounded-2xl border-t-4 border-green-500 shadow-xl space-y-4">
-            <h2 class="text-sm font-bold text-green-400 uppercase flex items-center gap-2">
-                <span class="w-2 h-2 bg-green-500 rounded-full"></span> Xác Thực
-            </h2>
-            <div class="grid grid-cols-2 gap-2">
-                <input id="r_in" placeholder="Nhận r" inputmode="numeric" class="bg-slate-900 p-3 rounded-xl border border-slate-600 text-xs text-green-400">
-                <input id="s_in" placeholder="Nhận s" inputmode="numeric" class="bg-slate-900 p-3 rounded-xl border border-slate-600 text-xs text-green-400">
-            </div>
-            <button onclick="verify()" class="w-full bg-green-600 hover:bg-green-500 py-4 rounded-xl font-black uppercase text-sm shadow-lg active:scale-95 transition-all">
-                Kiểm tra chữ ký
-            </button>
-            <div id="resVer" class="p-4 bg-black/40 rounded-xl text-xs leading-relaxed text-green-200 border border-green-900/20">
-                Chờ xác thực...
-            </div>
-        </section>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <section class="bg-slate-800 p-6 rounded-2xl border-t-4 border-blue-500 shadow-xl">
+                <h2 class="text-lg font-bold text-blue-400 mb-4 uppercase">Bên Gửi (Mã hóa)</h2>
+                <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-2">
+                        <div><label class="text-[10px] block mb-1">Số ngẫu nhiên k</label><input id="k" placeholder="VD: 5" class="w-full bg-slate-900 p-2 rounded border border-slate-600 font-mono"></div>
+                        <div><label class="text-[10px] block mb-1">Thông điệp M</label><input id="M" placeholder="VD: 30" class="w-full bg-slate-900 p-2 rounded border border-slate-600 font-mono text-blue-400"></div>
+                    </div>
+                    <button onclick="encrypt()" class="w-full bg-blue-600 py-2 rounded font-bold">TẠO BẢN MÃ (C1, C2)</button>
+                    <div id="resEnc" class="p-3 bg-black/40 rounded text-xs space-y-1 font-mono text-blue-200">
+                        <div>- C1 = a^k mod q</div>
+                        <div>- K = yA^k mod q</div>
+                        <div>- C2 = (K * M) mod q</div>
+                    </div>
+                </div>
+            </section>
 
-        <section class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow-inner">
-            <h2 class="text-[10px] font-bold text-pink-400 uppercase mb-3">Giải thuật chi tiết</h2>
-            <div id="solDSA" class="bg-black/30 p-3 rounded-xl text-[11px] leading-relaxed text-slate-400 overflow-x-auto">
-                Chưa có lời giải...
+            <section class="bg-slate-800 p-6 rounded-2xl border-t-4 border-orange-500 shadow-xl">
+                <h2 class="text-lg font-bold text-orange-400 mb-4 uppercase">Bên Nhận (Giải mã)</h2>
+                <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-2">
+                        <div><label class="text-[10px] block mb-1">Bản mã C1</label><input id="C1" class="w-full bg-slate-900 p-2 rounded border border-slate-600 font-mono text-orange-300"></div>
+                        <div><label class="text-[10px] block mb-1">Bản mã C2</label><input id="C2" class="w-full bg-slate-900 p-2 rounded border border-slate-600 font-mono text-orange-300"></div>
+                    </div>
+                    <button onclick="decrypt()" class="w-full bg-orange-600 py-2 rounded font-bold">GIẢI MÃ VỀ M</button>
+                    <div id="resDec" class="p-3 bg-black/40 rounded text-xs space-y-1 font-mono text-orange-200">
+                        <div>- K = C1^xA mod q</div>
+                        <div>- K⁻¹ = Nghịch đảo của K mod q</div>
+                        <div>- M = (C2 * K⁻¹) mod q</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <section class="bg-slate-800 p-5 rounded-xl border border-slate-700 shadow-lg">
+            <h2 class="text-xs font-bold text-purple-400 uppercase mb-4">Dòng thời gian & Lời giải chi tiết</h2>
+            <div id="fullSolution" class="bg-black/50 p-4 rounded font-mono text-sm leading-relaxed text-slate-300 min-h-[100px]">
+                Bấm các nút phía trên để máy sinh lời giải tự động...
             </div>
         </section>
     </div>
@@ -74,25 +66,65 @@
     <script>
         const big = (n) => BigInt(n);
         function mPow(b, e, m) { let r = 1n; b = big(b)%big(m); e = big(e); while(e>0n){ if(e%2n===1n) r=(r*b)%big(m); b=(b*b)%big(m); e/=2n; } return r; }
-        function mInv(a, m) { let m0 = big(m), y = 0n, x = 1n; a = big(a); m = big(m); while (a > 1n) { if(m === 0n) return 0n; let q = a / m, t = m; m = a % m; a = t; t = y; y = x - q * y; x = t; } return x < 0n ? x + m0 : x; }
-        
-        function sign() {
-            try {
-                const p = big(document.getElementById('p').value), q = big(document.getElementById('q').value), h = big(document.getElementById('h').value), x = big(document.getElementById('xA').value), k = big(document.getElementById('k').value), hm = big(document.getElementById('hm').value);
-                const g = mPow(h, (p-1n)/q, p), y = mPow(g, x, p), r = mPow(g, k, p)%q, s = (mInv(k,q)*(hm+x*r))%q;
-                document.getElementById('resSign').innerHTML = `g=${g}, y=${y}<br><b>r = ${r}</b><br><b>s = ${s}</b>`;
-                document.getElementById('r_in').value = r; document.getElementById('s_in').value = s;
-                document.getElementById('solDSA').innerHTML = `<p class="text-orange-400 font-bold underline">BƯỚC KÝ:</p>1. g = h^((p-1)/q) mod p = ${g}<br>2. y = g^x mod p = ${y}<br>3. r = (g^k mod p) mod q = ${r}<br>4. s = [k⁻¹ * (H(M) + x*r)] mod q = ${s}`;
-            } catch(e) { alert("Nhập đủ số đã Việt ơi!"); }
+        function mInv(a, m) { let m0 = big(m), y = 0n, x = 1n; a = big(a); m = big(m); while (a > 1n) { let q = a / m, t = m; m = a % m; a = t; t = y; y = x - q * y; x = t; } return x < 0n ? x + m0 : x; }
+
+        let yA_val, n_val, a_val, xA_val;
+
+        function calcYa() {
+            n_val = big(document.getElementById('q').value);
+            a_val = big(document.getElementById('a').value);
+            xA_val = big(document.getElementById('xA').value);
+            yA_val = mPow(a_val, xA_val, n_val);
+            document.getElementById('resYa').innerHTML = `yA = ${a_val}<sup>${xA_val}</sup> mod ${n_val} = <b>${yA_val}</b>`;
         }
 
-        function verify() {
-            try {
-                const p = big(document.getElementById('p').value), q = big(document.getElementById('q').value), h = big(document.getElementById('h').value), x = big(document.getElementById('xA').value), r = big(document.getElementById('r_in').value), s = big(document.getElementById('s_in').value), hm = big(document.getElementById('hm').value);
-                const g = mPow(h, (p-1n)/q, p), y = mPow(g, x, p), w = mInv(s, q), u1 = (hm*w)%q, u2 = (r*w)%q, v = ((mPow(g, u1, p)*mPow(y, u2, p))%p)%q;
-                document.getElementById('resVer').innerHTML = `w=${w}, u1=${u1}, u2=${u2}<br><b>v = ${v}</b>`;
-                document.getElementById('solDSA').innerHTML += `<br><br><p class="text-green-400 font-bold underline">BƯỚC XÁC THỰC:</p>1. w = s⁻¹ mod q = ${w}<br>2. u1 = [H(M)*w] mod q = ${u1}<br>3. u2 = [r*w] mod q = ${u2}<br>4. v = [(g^u1 * y^u2) mod p] mod q = ${v}<br>=> ${v==r?'Hợp lệ (v=r)':'Không hợp lệ'}`;
-            } catch(e) { alert("Thiếu thông số xác thực!"); }
+        function encrypt() {
+            const k = big(document.getElementById('k').value), M = big(document.getElementById('M').value);
+            const C1 = mPow(a_val, k, n_val);
+            const K = mPow(yA_val, k, n_val);
+            const C2 = (K * M) % n_val;
+            
+            document.getElementById('resEnc').innerHTML = `
+                <div>✓ C1 = ${a_val}^${k} mod ${n_val} = <b>${C1}</b></div>
+                <div>✓ K = ${yA_val}^${k} mod ${n_val} = <b>${K}</b></div>
+                <div>✓ C2 = (${K} * ${M}) mod ${n_val} = <b>${C2}</b></div>
+            `;
+            document.getElementById('C1').value = C1;
+            document.getElementById('C2').value = C2;
+            
+            updateSolution('enc', {k, M, C1, K, C2});
+        }
+
+        function decrypt() {
+            const C1 = big(document.getElementById('C1').value), C2 = big(document.getElementById('C2').value);
+            const K = mPow(C1, xA_val, n_val);
+            const K_inv = mInv(K, n_val);
+            const M = (C2 * K_inv) % n_val;
+            
+            document.getElementById('resDec').innerHTML = `
+                <div>✓ K = ${C1}^${xA_val} mod ${n_val} = <b>${K}</b></div>
+                <div>✓ K⁻¹ = ${K}⁻¹ mod ${n_val} = <b>${K_inv}</b></div>
+                <div>✓ M = (${C2} * ${K_inv}) mod ${n_val} = <b>${M}</b></div>
+            `;
+            updateSolution('dec', {C1, C2, K, K_inv, M});
+        }
+
+        function updateSolution(type, data) {
+            let sol = document.getElementById('fullSolution');
+            if(type === 'enc') {
+                sol.innerHTML = `<p class="text-blue-400 font-bold underline">BƯỚC MÃ HÓA:</p>
+                1. Chọn k = ${data.k}. Tính C1 = a^k mod q = ${data.C1}.<br>
+                2. Tính khóa phiên K = yA^k mod q = ${yA_val}^${data.k} mod ${n_val} = ${data.K}.<br>
+                3. Tính C2 = (K * M) mod q = (${data.K} * ${data.M}) mod ${n_val} = ${data.C2}.<br>
+                => Bản mã gửi đi là (C1, C2) = (${data.C1}, ${data.C2}).`;
+            } else {
+                sol.innerHTML += `<br><br><p class="text-orange-400 font-bold underline">BƯỚC GIẢI MÃ:</p>
+                1. Nhận (C1, C2) = (${data.C1}, ${data.C2}).<br>
+                2. Tính K = C1^xA mod q = ${data.C1}^${xA_val} mod ${n_val} = ${data.K}.<br>
+                3. Tìm nghịch đảo K⁻¹ mod ${n_val} = ${data.K_inv}.<br>
+                4. Tính M = (C2 * K⁻¹) mod q = (${data.C2} * ${data.K_inv}) mod ${n_val} = ${data.M}.<br>
+                => Thông điệp gốc là M = ${data.M}.`;
+            }
         }
     </script>
 </body>
