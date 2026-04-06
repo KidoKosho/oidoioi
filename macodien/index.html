@@ -31,7 +31,7 @@
             <button onclick="setMode('caesar')" id="nav-caesar" class="nav-btn px-6 py-2.5 rounded-full border border-slate-800 text-[10px] font-black uppercase transition-all hover:border-blue-500">01. Caesar</button>
             <button onclick="setMode('vigenere')" id="nav-vigenere" class="nav-btn px-6 py-2.5 rounded-full border border-slate-800 text-[10px] font-black uppercase transition-all hover:border-blue-500">02. Vigenere</button>
             <button onclick="setMode('playfair')" id="nav-playfair" class="nav-btn px-6 py-2.5 rounded-full border border-slate-800 text-[10px] font-black uppercase transition-all hover:border-blue-500">03. Playfair</button>
-            <button onclick="setMode('trans')" id="nav-trans" class="nav-btn px-6 py-2.5 rounded-full border border-slate-800 text-[10px] font-black uppercase transition-all hover:border-blue-500">04. Hoán vị (Zig-Zag)</button>
+            <button onclick="setMode('trans')" id="nav-trans" class="nav-btn px-6 py-2.5 rounded-full border border-slate-800 text-[10px] font-black uppercase transition-all hover:border-blue-500">04. RAIL-FENCE</button>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -99,7 +99,7 @@
                                         <option value="auto">Chế độ: Khóa tự động (Autokey)</option>
                                     </select>`;
             } else if(mode === 'trans') {
-                keyBox.innerHTML = `<label class="text-[10px] font-black uppercase text-slate-500 mb-2 block">Số hàng (Rails - Độ cao ZigZag)</label>
+                keyBox.innerHTML = `<label class="text-[10px] font-black uppercase text-slate-500 mb-2 block">Số hàng (Rails - Độ cao RAIL-FENCE)</label>
                                     <input id="inK" type="number" value="3" min="2" class="w-full bg-slate-950 p-4 rounded-2xl border border-slate-800 outline-none font-bold text-white">`;
             } else if(mode === 'playfair') {
                 keyBox.innerHTML = `<label class="text-[10px] font-black uppercase text-slate-500 mb-2 block">Từ khóa ma trận (Key Word)</label>
@@ -162,7 +162,7 @@
                     rail += dir;
                     if(rail === 0 || rail === rails-1) dir *= -1;
                 }
-                steps += `<p class="mb-4 text-[10px] font-bold text-blue-500 uppercase tracking-widest underline">Ma trận Zig-Zag:</p><div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 mb-6 overflow-x-auto mono text-lg leading-relaxed">`;
+                steps += `<p class="mb-4 text-[10px] font-bold text-blue-500 uppercase tracking-widest underline">Ma trận RAIL-FENCE:</p><div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 mb-6 overflow-x-auto mono text-lg leading-relaxed">`;
                 for(let r=0; r<rails; r++) {
                     let rowStr = fence[r].map(c => c === '.' ? `<span class="text-slate-900">.</span>` : `<span class="text-blue-400 font-black">${c}</span>`).join(' ');
                     steps += `<div class="whitespace-nowrap tracking-[0.5em]">${rowStr}</div>`;
